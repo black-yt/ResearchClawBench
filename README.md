@@ -4,7 +4,7 @@
 
 <div align="center">
 
-[![Official Site](https://img.shields.io/badge/Official%20Site-333399.svg?logo=homepage)](https://black-yt.github.io/RCB/)&#160;
+[![Official Site](https://img.shields.io/badge/Official%20Site-333399.svg?logo=homepage)](https://black-yt.github.io/ResearchClawBench-Home/)&#160;
 [![GitHub](https://img.shields.io/badge/GitHub-000000?logo=github&logoColor=white)](https://github.com/black-yt/ResearchClawBench)&#160;
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
