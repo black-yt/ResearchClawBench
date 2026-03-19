@@ -139,7 +139,7 @@ Each domain contains **4 carefully curated tasks** with complete experimental da
 
 | Domain | Example Topics | Data Types |
 |:---|:---|:---|
-| **Astronomy** | Black hole superradiance, Bayesian stellar inference | `.dat` posterior samples |
+| **Astronomy** | Black hole superradiance, Bayesian stellar inference | `.dat`, `.csv` |
 | **Chemistry** | GNN molecular prediction, protein-ligand docking | `.pdb`, `.sdf`, `.csv` |
 | **Earth** | Glacier mass balance, climate datasets | `.csv` multi-region series |
 | **Energy** | Battery degradation, renewable energy modeling | `.xlsx`, time series |
@@ -148,7 +148,7 @@ Each domain contains **4 carefully curated tasks** with complete experimental da
 | **Material** | Materials property prediction, pretrained models | `.pt`, `.csv` |
 | **Math** | Multi-agent pathfinding, optimization | `.json`, `.npy` grid maps |
 | **Neuroscience** | Neural decoding, brain signal processing | `.csv`, `.h5`, `.yaml` |
-| **Physics** | Quantum geometry, superfluid stiffness | structured datasets |
+| **Physics** | Quantum geometry, superfluid stiffness | `.h5`, `.json`, `.csv` |
 
 **40 tasks total** — each a self-contained research challenge selected from high-quality human-authored publications, spanning the full spectrum from data analysis to novel scientific insight.
 
