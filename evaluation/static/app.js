@@ -345,27 +345,27 @@ function renderFrontierChart(data) {
 
 function renderLeaderboard(data) {
   const wrap = document.getElementById('leaderboard-wrap');
-  if (!data.agents.length) { wrap.innerHTML = '<p class="placeholder">No scored runs yet.</p>'; return; }
 
-  // Gradient color: 0=deep red → 25=orange → 50=yellow → 75=green → 100=bright green
+  // Live clock (static mode only)
+  if (STATIC_MODE) {
+    function updateClock() {
+      const el = document.getElementById('live-clock');
+      if (el) el.textContent = new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC';
+    }
+    updateClock();
+    if (!window._clockInterval) window._clockInterval = setInterval(updateClock, 1000);
+  }
+
   function scoreColor(v) {
     if (v <= 0) return 'transparent';
     const t = Math.max(0, Math.min(100, v)) / 100;
-    // Hue: 0(red) → 30(orange) → 55(yellow) → 120(green)
     const hue = t < 0.5 ? t * 2 * 55 : 55 + (t - 0.5) * 2 * 65;
-    const sat = 75;
-    const light = 42 + t * 12;
-    return `hsl(${hue}, ${sat}%, ${light}%)`;
+    return `hsl(${hue}, 75%, ${42 + t * 12}%)`;
   }
-
-  function cellStyle(v) {
-    if (v <= 0) return '';
-    const bg = scoreColor(v);
-    return `background:${bg}; color:#fff; font-weight:600;`;
-  }
+  function cellStyle(v) { return v > 0 ? `background:${scoreColor(v)};color:#fff;font-weight:600;` : ''; }
 
   let html = '<table class="leaderboard"><thead><tr><th>Task</th>';
-  data.agents.forEach(a => html += `<th>${agentLogoHtml(a, 14)} ${esc(a)}</th>`);
+  data.agents.forEach(a => html += `<th>${agentLogoHtml(a, 20)} ${esc(a)}</th>`);
   html += '<th>Frontier</th></tr></thead><tbody>';
 
   data.tasks.forEach(task => {
@@ -376,24 +376,30 @@ function renderLeaderboard(data) {
         const s = entry.score;
         html += `<td onclick="goToRun('${entry.run_id}')" style="cursor:pointer"><span class="score-cell" style="${cellStyle(s)}">${s.toFixed(1)}</span></td>`;
       } else {
-        html += '<td class="no-score">-</td>';
+        html += STATIC_MODE
+          ? '<td><span class="running-cell">running</span></td>'
+          : '<td class="no-score">-</td>';
       }
     });
-    const f = data.frontier[task] || 0;
-    html += `<td><span class="score-cell" style="${cellStyle(f)}">${f.toFixed(1)}</span></td>`;
+    const f = data.frontier[task];
+    if (f && f > 0) {
+      html += `<td><span class="score-cell" style="${cellStyle(f)}">${f.toFixed(1)}</span></td>`;
+    } else {
+      html += '<td class="no-score">-</td>';
+    }
     html += '</tr>';
   });
 
-  // Average row
+  // Average row — only count tasks that have scores
   html += '<tr class="frontier-row"><td>Average</td>';
   data.agents.forEach(agent => {
     const scores = data.tasks.map(t => data.scores[agent]?.[t]?.score).filter(v => v != null);
     const avg = scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
-    html += `<td><span class="score-cell" style="${cellStyle(avg)}">${avg.toFixed(1)}</span></td>`;
+    html += `<td><span class="score-cell" style="${cellStyle(avg)}">${scores.length ? avg.toFixed(1) : '-'}</span></td>`;
   });
-  const fScores = data.tasks.map(t => data.frontier[t] || 0);
+  const fScores = data.tasks.map(t => data.frontier[t]).filter(v => v != null && v > 0);
   const fAvg = fScores.length ? fScores.reduce((a, b) => a + b, 0) / fScores.length : 0;
-  html += `<td><span class="score-cell" style="${cellStyle(fAvg)}">${fAvg.toFixed(1)}</span></td>`;
+  html += `<td><span class="score-cell" style="${cellStyle(fAvg)}">${fScores.length ? fAvg.toFixed(1) : '-'}</span></td>`;
   html += '</tr></tbody></table>';
 
   wrap.innerHTML = html;
