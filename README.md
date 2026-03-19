@@ -46,6 +46,10 @@ Unlike benchmarks that test coding ability or factual recall, ResearchClawBench 
 </tr>
 </table>
 
+## 🎬 Demo
+
+https://github.com/user-attachments/assets/07c427bb-b841-4170-b58f-9b86f1a01264
+
 ---
 
 ## 💡 Why ResearchClawBench?
