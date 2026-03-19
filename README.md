@@ -39,7 +39,7 @@ Unlike benchmarks that test coding ability or factual recall, ResearchClawBench 
 <td align="center" width="25%">🤖<br/><b>Multi-Agent Support</b><br/><sub>Claude Code, Codex CLI, OpenClaw & custom agents</sub></td>
 </tr>
 <tr>
-<td align="center">🚀<br/><b>Re-Discovery to New Discovery</b><br/><sub>50 = match the paper, 70+ = surpass it</sub></td>
+<td align="center">🚀<br/><b>Re-Discovery to New-Discovery</b><br/><sub>50 = match the paper, 70+ = surpass it</sub></td>
 <td align="center">📋<br/><b>Fine-Grained Checklist</b><br/><sub>Per-item keywords, weights & reasoning</sub></td>
 <td align="center">📡<br/><b>Live Streaming UI</b><br/><sub>Watch agents code, plot & write in real-time</sub></td>
 <td align="center">🍃<br/><b>Lightweight Dependencies</b><br/><sub>Pure Flask + vanilla JS, no heavy frameworks</sub></td>
@@ -60,7 +60,7 @@ Most AI benchmarks evaluate what models **know**. We evaluate what agents can **
 - **Two-stage pipeline.** Autonomous research first, rigorous evaluation second — just like peer review.
 - **Fine-grained, multimodal scoring.** A weighted checklist with text and image criteria, judged by an LLM acting as a strict peer reviewer.
 - **Agent-agnostic.** Ships with first-class support for Claude Code, Codex CLI, and OpenClaw. Bring your own agent in one line.
-- **From Re-Discovery to New Discovery.** Scoring above 50 means matching the original paper; above 70 means *surpassing* it. The frontier is wide open.
+- **From Re-Discovery to New-Discovery.** Scoring above 50 means matching the original paper; above 70 means *surpassing* it. The frontier is wide open.
 
 ---
 
