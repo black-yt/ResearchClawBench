@@ -141,12 +141,12 @@ Each domain contains **4 carefully curated tasks** with complete experimental da
 |:---|:---|:---|
 | **Astronomy** | Black hole superradiance, Bayesian stellar inference | `.dat`, `.csv` |
 | **Chemistry** | GNN molecular prediction, protein-ligand docking | `.pdb`, `.sdf`, `.csv` |
-| **Earth** | Glacier mass balance, climate datasets | `.csv` multi-region series |
+| **Earth** | Glacier mass balance, climate datasets | `.csv`, multi-region series |
 | **Energy** | Battery degradation, renewable energy modeling | `.xlsx`, time series |
 | **Information** | NLP benchmarks, deep learning analysis | `.pdf`, `.tex`, `.ipynb` |
 | **Life** | Nanopore sequencing, genomic analysis | `.csv`, `.xlsx` |
 | **Material** | Materials property prediction, pretrained models | `.pt`, `.csv` |
-| **Math** | Multi-agent pathfinding, optimization | `.json`, `.npy` grid maps |
+| **Math** | Multi-agent pathfinding, optimization | `.json`, `.npy`, grid maps |
 | **Neuroscience** | Neural decoding, brain signal processing | `.csv`, `.h5`, `.yaml` |
 | **Physics** | Quantum geometry, superfluid stiffness | `.h5`, `.json`, `.csv` |
 
