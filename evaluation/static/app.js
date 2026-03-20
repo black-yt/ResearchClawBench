@@ -672,7 +672,7 @@ async function selectRun(runId) {
     const meta = await (await fetch(`${API}/api/runs/${runId}/meta`)).json();
     showDuration(meta.duration_seconds);
     if (meta.status === 'running') {
-      showDuration(null); // clear during running
+      startDurationTimer();
       startStreaming(runId); switchTab(state.lastTab); loadWorkspace(runId);
     } else {
       // Load workspace + file first, then the rest in parallel
@@ -737,6 +737,7 @@ async function startRun() {
   try {
     const data = await (await fetch(`${API}/api/runs`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) })).json();
     state.currentRunId = data.run_id;
+    startDurationTimer();
     switchTab('research'); startStreaming(data.run_id); await loadRuns(state.currentTaskId);
   } catch (e) { alert('Failed: ' + e.message); }
   finally { btn.disabled = false; btn.innerHTML = '<span class="btn-icon">&#9654;</span> Start Run'; }
@@ -771,12 +772,19 @@ function onStreamEnd(status, runId) {
   const st = document.getElementById('terminal-status');
   st.textContent = 'Agent Output';
   st.className = 'terminal-status completed';
+  stopDurationTimer();
+  // Keep the timer's final value displayed; it will be overwritten by meta.duration_seconds when available
   { const _el = document.getElementById('btn-stop-run'); if (_el) _el.style.display = 'none'; }
   // Wait for _meta.json to be written, then refresh
-  setTimeout(() => {
+  setTimeout(async () => {
     loadRuns(state.currentTaskId);
     loadWorkspace(runId);
     loadReport(runId);
+    // Update duration from server (accurate)
+    try {
+      const meta = await (await fetch(`${API}/api/runs/${runId}/meta`)).json();
+      if (meta.duration_seconds != null) showDuration(meta.duration_seconds);
+    } catch (_) {}
   }, 1500);
 }
 
@@ -1413,14 +1421,34 @@ async function fetchStaticJSON(path) {
 }
 
 function formatDuration(seconds) {
-  if (!seconds && seconds !== 0) return '';
-  const m = Math.floor(seconds / 60);
+  if (!seconds && seconds !== 0) return '00h00m00s';
+  seconds = Math.floor(seconds);
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
   const s = seconds % 60;
-  if (m >= 60) { const h = Math.floor(m / 60); return `${h}h${m % 60}m`; }
-  return `${m}m${s}s`;
+  return `${String(h).padStart(2,'0')}h${String(m).padStart(2,'0')}m${String(s).padStart(2,'0')}s`;
 }
 
+let _durationTimer = null;
+let _durationStart = null;
+
 function showDuration(seconds) {
+  stopDurationTimer();
   const el = document.getElementById('duration-display');
-  if (el) el.textContent = seconds != null ? formatDuration(seconds) : '';
+  if (el) el.textContent = formatDuration(seconds);
+}
+
+function startDurationTimer() {
+  stopDurationTimer();
+  _durationStart = Date.now();
+  const el = document.getElementById('duration-display');
+  if (el) el.textContent = formatDuration(0);
+  _durationTimer = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - _durationStart) / 1000);
+    if (el) el.textContent = formatDuration(elapsed);
+  }, 1000);
+}
+
+function stopDurationTimer() {
+  if (_durationTimer) { clearInterval(_durationTimer); _durationTimer = null; }
 }
