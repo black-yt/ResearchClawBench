@@ -460,6 +460,16 @@ async function selectTask(taskId) {
   document.getElementById('file-content-body').innerHTML = '<div class="placeholder">Loading...</div>';
   document.getElementById('terminal-body').innerHTML = '<div class="placeholder">Loading...</div>';
   document.getElementById('report-content').innerHTML = '<div class="placeholder">Loading...</div>';
+  document.getElementById('task-checklist-preview').innerHTML = '<div class="placeholder">Loading...</div>';
+  document.getElementById('score-total-area').innerHTML = '';
+  // Reset paper iframe
+  const _paperIframe = document.getElementById('paper-iframe');
+  if (_paperIframe) {
+    _paperIframe.style.display = 'block';
+    _paperIframe.src = 'about:blank';
+    const _ph = _paperIframe.parentElement.querySelector('.placeholder');
+    if (_ph) _ph.remove();
+  }
   document.getElementById('task-domain').textContent = taskId.replace(/_\d+$/, '');
   document.getElementById('task-title').textContent = taskId;
 
@@ -506,13 +516,17 @@ async function selectTask(taskId) {
           if (old) old.remove();
         } else {
           paperIframe.style.display = 'none';
-          if (!paperContainer.querySelector('.placeholder')) {
-            paperContainer.innerHTML = '<div class="placeholder" style="padding:20px">Paper PDF too large for GitHub Pages.<br><br>View on <a href="https://github.com/InternScience/ResearchClawBench" target="_blank" style="color:var(--accent)">GitHub</a></div>';
-          }
+          paperIframe.src = 'about:blank';
+          const old = paperContainer.querySelector('.placeholder');
+          if (old) old.remove();
+          paperContainer.insertAdjacentHTML('beforeend', '<div class="placeholder" style="padding:20px">Paper PDF too large for GitHub Pages.<br><br>View on <a href="https://github.com/InternScience/ResearchClawBench" target="_blank" style="color:var(--accent)">GitHub</a></div>');
         }
       } catch (_) {
         paperIframe.style.display = 'none';
-        paperContainer.innerHTML = '<div class="placeholder" style="padding:20px">Paper PDF not available.<br><br>View on <a href="https://github.com/InternScience/ResearchClawBench" target="_blank" style="color:var(--accent)">GitHub</a></div>';
+        paperIframe.src = 'about:blank';
+        const old2 = paperContainer.querySelector('.placeholder');
+        if (old2) old2.remove();
+        paperContainer.insertAdjacentHTML('beforeend', '<div class="placeholder" style="padding:20px">Paper PDF not available.<br><br>View on <a href="https://github.com/InternScience/ResearchClawBench" target="_blank" style="color:var(--accent)">GitHub</a></div>');
       }
     } else {
       paperIframe.src = `${API}/api/tasks/${taskId}/paper`;
