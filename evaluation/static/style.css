@@ -162,7 +162,13 @@ body { height: 100vh; font-family: var(--font); font-size: 17px; line-height: 1.
 .sidebar-section h3 {
     font-size: 12px; text-transform: uppercase; letter-spacing: 1.2px;
     color: var(--text-sidebar-dim); margin-bottom: 6px; padding: 0 8px; font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
 }
+.sidebar-toggle-btn {
+    background: none; border: none; color: var(--text-sidebar-dim); cursor: pointer;
+    font-size: 10px; padding: 2px 4px; border-radius: 3px; line-height: 1;
+}
+.sidebar-toggle-btn:hover { background: var(--bg-hover); }
 
 /* domain groups */
 .domain-group { margin-bottom: 2px; }

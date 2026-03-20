@@ -20,8 +20,12 @@ SCORER_MODEL = os.environ.get("SCORER_MODEL", "gpt-5.1")
 # Agent presets loaded from agents.json
 # <PROMPT> and <WORKSPACE> are replaced at runtime in run_task.py
 _agents_path = Path(__file__).parent / "agents.json"
-with open(_agents_path, "r", encoding="utf-8") as _f:
-    AGENT_PRESETS = json.load(_f)
+try:
+    with open(_agents_path, "r", encoding="utf-8") as _f:
+        AGENT_PRESETS = json.load(_f)
+except (FileNotFoundError, json.JSONDecodeError) as e:
+    print(f"Warning: Failed to load agents.json: {e}")
+    AGENT_PRESETS = {}
 
 # Image extensions recognized for vision scoring
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".svg"}

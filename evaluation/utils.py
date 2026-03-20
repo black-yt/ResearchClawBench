@@ -97,14 +97,12 @@ def get_run_workspace(run_id: str) -> Optional[Path]:
 
 
 def safe_resolve(base: Path, user_path: str) -> Optional[Path]:
-    """Resolve user_path relative to base, preventing directory traversal.
-
-    Returns resolved Path if safe, None if traversal detected.
-    """
+    """Resolve user_path relative to base, preventing directory traversal."""
     try:
         resolved = (base / user_path).resolve()
         base_resolved = base.resolve()
-        if resolved == base_resolved or str(resolved).startswith(str(base_resolved) + os.sep):
+        # Use is_relative_to (Python 3.9+) for robust check
+        if resolved == base_resolved or resolved.is_relative_to(base_resolved):
             return resolved
     except (ValueError, OSError):
         pass
@@ -117,7 +115,7 @@ def build_file_tree(root: Path, prefix: str = "") -> list:
     Returns a flat list where directories appear before their children.
     Skips hidden files and internal metadata files.
     """
-    skip_names = {"_meta.json", "_agent_output.jsonl", "_score.json", ".claude"}
+    skip_names = {"_meta.json", "_agent_output.jsonl", "_score.json", ".claude", "__pycache__"}
     tree = []
     try:
         entries = sorted(root.iterdir(), key=lambda p: (not p.is_dir(), p.name.lower()))

@@ -1448,6 +1448,7 @@ function setupButtons() {
   bind('btn-auto-follow', 'onclick', toggleAutoFollow);
   bind('btn-file-follow', 'onclick', toggleFileFollow);
   bind('btn-toggle-tree', 'onclick', toggleTreeCollapse);
+  bind('btn-toggle-domains', 'onclick', toggleDomainCollapse);
 
   document.querySelectorAll('.tab').forEach(tab => tab.onclick = () => switchTab(tab.dataset.tab));
 
@@ -1509,6 +1510,15 @@ function toggleTreeCollapse() {
   document.querySelectorAll('#file-tree .file-tree-children').forEach(c => {
     c.style.display = treeExpanded ? 'block' : 'none';
   });
+}
+
+let domainsExpanded = false;
+function toggleDomainCollapse() {
+  domainsExpanded = !domainsExpanded;
+  const btn = document.getElementById('btn-toggle-domains');
+  if (btn) btn.innerHTML = domainsExpanded ? '&#9660;' : '&#9654;';
+  document.querySelectorAll('.domain-toggle').forEach(t => t.classList.toggle('open', domainsExpanded));
+  document.querySelectorAll('.domain-tasks').forEach(t => t.classList.toggle('open', domainsExpanded));
 }
 
 function backToDashboard() {
