@@ -211,6 +211,7 @@ __marimo__/
 
 # Claude Code local config
 .claude/
+CLAUDE.md
 
 # Local proxy startup script (machine-specific)
 start_proxy.sh
