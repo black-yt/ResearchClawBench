@@ -453,6 +453,13 @@ async function selectTask(taskId) {
   document.querySelectorAll('.task-item').forEach(el => el.classList.toggle('active', el.dataset.taskId === taskId));
   document.getElementById('welcome-screen').style.display = 'none';
   document.getElementById('task-view').style.display = 'flex';
+
+  // Immediately clear stale content from previous task
+  document.getElementById('file-tree').innerHTML = '<div class="placeholder" style="padding:8px;opacity:.6">Loading...</div>';
+  document.getElementById('file-content-header').textContent = '';
+  document.getElementById('file-content-body').innerHTML = '<div class="placeholder">Loading...</div>';
+  document.getElementById('terminal-body').innerHTML = '<div class="placeholder">Loading...</div>';
+  document.getElementById('report-content').innerHTML = '<div class="placeholder">Loading...</div>';
   document.getElementById('task-domain').textContent = taskId.replace(/_\d+$/, '');
   document.getElementById('task-title').textContent = taskId;
 
@@ -527,12 +534,13 @@ async function selectTask(taskId) {
     // Load task file tree (both modes)
     if (STATIC_MODE) {
       await loadStaticTaskFiles(taskId);
+      // Auto-open INSTRUCTIONS.md
+      const instrUrl = `data/tasks/${taskId}/workspace/INSTRUCTIONS.md`;
+      renderFileContent('INSTRUCTIONS.md', 'INSTRUCTIONS.md', instrUrl, null, `data/tasks/${taskId}/workspace/`, 'INSTRUCTIONS.md');
     } else {
       await loadTaskFiles(taskId);
     }
     // Clear non-file panels
-    document.getElementById('file-content-header').textContent = 'No file selected';
-    document.getElementById('file-content-body').innerHTML = '<div class="placeholder">Select a file from the explorer</div>';
     document.getElementById('terminal-body').innerHTML = '<div class="placeholder">No runs yet</div>';
     showDuration(null);
     document.getElementById('report-content').innerHTML = '<div class="placeholder">Report appears after run completes</div>';
@@ -610,11 +618,14 @@ async function selectRun(runId) {
     const files = await fetchStaticJSON(`data/runs/${runId}/files.json`);
     if (files && files.length) {
       renderFileTree(files, runId, null);
-      let latest = null;
-      for (const f of files) { if (f.type !== 'file' || !isViewableFile(f.name) || f.exported === false) continue; if (!latest || (f.mtime && f.mtime > (latest.mtime || 0))) latest = f; }
-      if (latest) {
-        const url = `data/runs/${runId}/workspace/${latest.path}`;
-        renderFileContent(latest.path, latest.name, url, null, `data/runs/${runId}/workspace/`, latest.path);
+      // Auto-open: prefer report/report.md, then latest file by mtime
+      let best = null;
+      const report = files.find(f => f.path === 'report/report.md' && f.type === 'file' && f.exported !== false);
+      if (report) { best = report; }
+      else { for (const f of files) { if (f.type !== 'file' || !isViewableFile(f.name) || f.exported === false) continue; if (!best || (f.mtime && f.mtime > (best.mtime || 0))) best = f; } }
+      if (best) {
+        const url = `data/runs/${runId}/workspace/${best.path}`;
+        renderFileContent(best.path, best.name, url, null, `data/runs/${runId}/workspace/`, best.path);
       }
     }
     // Agent output (limit to last 500 lines to prevent freeze)
@@ -676,6 +687,8 @@ async function autoOpenLatestFile(runId) {
   if (state.userSelectedFile) return;
   try {
     const files = await (await fetch(`${API}/api/runs/${runId}/files`)).json();
+    const report = files.find(f => f.path === 'report/report.md' && f.type === 'file');
+    if (report) { loadFile(runId, report.path, report.name, null, true); return; }
     let latest = null;
     for (const f of files) {
       if (f.type !== 'file' || !isViewableFile(f.name)) continue;
@@ -990,7 +1003,7 @@ function renderStaticTaskFileTree(files, taskId) {
           item.classList.add('active');
           if (f.exported === false) {
             document.getElementById('file-content-header').textContent = f.path;
-            document.getElementById('file-content-body').innerHTML = '<div class="placeholder">This file is too large for GitHub Pages.<br><br>View source on <a href="https://github.com/InternScience/ResearchClawBench" target="_blank" style="color:var(--accent)">GitHub</a></div>';
+            document.getElementById('file-content-body').innerHTML = '<div class="placeholder">File too large to preview.<br><br>View source on <a href="https://github.com/InternScience/ResearchClawBench" target="_blank" style="color:var(--accent)">GitHub</a></div>';
           } else {
             const url = `data/tasks/${taskId}/workspace/${f.path}`;
             renderFileContent(f.path, f.name, url, null, `data/tasks/${taskId}/workspace/`, f.path);
@@ -1042,7 +1055,8 @@ function renderFileTree(files, runId, taskId) {
           item.classList.add('active');
           if (f.exported === false) {
             document.getElementById('file-content-header').textContent = f.path;
-            document.getElementById('file-content-body').innerHTML = '<div class="placeholder">This file is too large for GitHub Pages.<br><br>View source on <a href="https://github.com/InternScience/ResearchClawBench" target="_blank" style="color:var(--accent)">GitHub</a></div>';
+            const reason = isViewableFile(f.name) ? 'File too large to preview.' : 'Binary file — cannot preview.';
+            document.getElementById('file-content-body').innerHTML = `<div class="placeholder">${reason}<br><br>View source on <a href="https://github.com/InternScience/ResearchClawBench" target="_blank" style="color:var(--accent)">GitHub</a></div>`;
           } else {
             const url = `data/runs/${runId}/workspace/${f.path}`;
             renderFileContent(f.path, f.name, url, null, `data/runs/${runId}/workspace/`, f.path);
