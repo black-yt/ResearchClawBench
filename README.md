@@ -36,7 +36,7 @@ Unlike benchmarks that test coding ability or factual recall, ResearchClawBench 
 <td align="center" width="25%">🔄<br/><b>Two-Stage Pipeline</b><br/><sub>Autonomous research + rigorous peer-review-style evaluation</sub></td>
 <td align="center" width="25%">🧪<br/><b>40 Real-Science Tasks</b><br/><sub>10 disciplines, complete datasets from published papers</sub></td>
 <td align="center" width="25%">👁️<br/><b>Expert-Annotated Data</b><br/><sub>Tasks, checklists & datasets curated by domain experts</sub></td>
-<td align="center" width="25%">🤖<br/><b>Multi-Agent Support</b><br/><sub>Claude Code, Codex CLI, OpenClaw & custom agents</sub></td>
+<td align="center" width="25%">🤖<br/><b>Multi-Agent Support</b><br/><sub>Claude Code, Codex CLI, OpenClaw, Nanobot & custom agents</sub></td>
 </tr>
 <tr>
 <td align="center">🚀<br/><b>Re-Discovery to New-Discovery</b><br/><sub>50 = match the paper, 70+ = surpass it</sub></td>
@@ -45,6 +45,13 @@ Unlike benchmarks that test coding ability or factual recall, ResearchClawBench 
 <td align="center">🍃<br/><b>Lightweight Dependencies</b><br/><sub>Pure Flask + vanilla JS, no heavy frameworks</sub></td>
 </tr>
 </table>
+
+## 📢 News
+
+- **2026-03-20** 🐈 Added [Nanobot](https://github.com/HKUDS/nanobot) as a new agent — ultra-lightweight OpenClaw alternative with reliable multi-step tool execution. Agent config moved to `agents.json` for easy customization.
+- **2026-03-19** 🚀 Initial release with Claude Code, Codex CLI, and OpenClaw support. 40 tasks across 10 scientific domains.
+
+---
 
 ## 🎬 Demo
 
@@ -272,39 +279,36 @@ After a run completes, switch to the **Evaluation** tab and click **Score**. The
 
 ## 🤖 Supported Agents
 
-ResearchClawBench ships with built-in support for three frontier coding agents:
+ResearchClawBench ships with built-in support for four frontier coding agents:
 
 | Agent | Command | Notes |
 |:------|:--------|:------|
-| <img src="evaluation/static/logos/anthropic.svg" width="16" /> **Claude Code** | `claude --dangerously-skip-permissions -p ...` | Stream-JSON output, auto model detection |
-| <img src="evaluation/static/logos/openai.svg" width="16" /> **Codex CLI** | `codex exec --full-auto ...` | Full-auto mode |
-| <img src="evaluation/static/logos/openclaw.svg" width="16" /> **OpenClaw** | `openclaw agent --agent main ...` | Fully autonomous, 3600s timeout |
+| <img src="evaluation/static/logos/anthropic.svg" width="16" /> **Claude Code** | `claude -p ...` | Anthropic, stream-JSON output |
+| <img src="evaluation/static/logos/openai.svg" width="16" /> **Codex CLI** | `codex exec --full-auto ...` | OpenAI, full-auto mode |
+| <img src="evaluation/static/logos/openclaw.svg" width="16" /> **OpenClaw** | `openclaw agent ...` | Self-hosted gateway, 3600s timeout |
+| <img src="evaluation/static/logos/nanobot.svg" width="16" /> **Nanobot** | `nanobot agent -m ...` | Ultra-lightweight, reliable tool execution |
 
 ### 🔧 Add Your Own Agent
 
-Any command that reads an instruction file and works inside a directory can be used. In the UI, select **Custom** and enter your command using these placeholders:
+Agent configuration is stored in `evaluation/agents.json`. To add a new agent, simply append an entry:
 
-| Placeholder | Replaced With |
-|:---|:---|
-| `{prompt_file}` | Absolute path to `INSTRUCTIONS.md` |
-| `{workspace}` | Absolute path to the workspace directory |
-
-Example:
-
-```bash
-my-agent run --instructions "{prompt_file}" --workdir "{workspace}"
-```
-
-Or add it as a preset in `evaluation/config.py`:
-
-```python
-AGENT_PRESETS["my_agent"] = {
+```json
+{
+  "my_agent": {
     "label": "My Agent",
     "icon": "M",
     "logo": "/static/logos/my_agent.svg",
-    "cmd": 'my-agent run --instructions "{prompt_file}" --workdir "{workspace}"',
+    "cmd": "my-agent run -m <PROMPT> -w <WORKSPACE>"
+  }
 }
 ```
+
+| Placeholder | Replaced With | Notes |
+|:---|:---|:---|
+| `<PROMPT>` | Prompt content (via file path or `$(cat ...)`) | Required. For `-p` style flags, replaced with file path; otherwise replaced with `"$(cat 'path')"` to pass content |
+| `<WORKSPACE>` | Absolute path to the workspace directory | Optional. Only replaced if present in cmd |
+
+The prompt injected into `<PROMPT>` is auto-generated from `evaluation/instructions_tmpl.py`, which combines a unified agent persona (autonomous execution guidelines, workspace sandbox rules) with task-specific instructions (description, data files, deliverables). All agents receive the exact same prompt — no code changes required, just edit the JSON file and restart the server.
 
 ---
 
@@ -328,9 +332,11 @@ ResearchClawBench/
 │   ├── server.py               # Flask API + SSE streaming
 │   ├── run_task.py             # Workspace setup + agent subprocess
 │   ├── score.py                # Multimodal LLM scoring engine
-│   ├── config.py               # Agent presets + constants
+│   ├── config.py               # Paths, constants, loads agents.json
+│   ├── agents.json             # Agent presets (add your own here)
+│   ├── instructions_tmpl.py    # Unified prompt template for all agents
 │   ├── utils.py                # File tree, path safety, discovery
-│   ├── static/app.js           # Single-file frontend (~1200 LOC)
+│   ├── static/app.js           # Single-file frontend
 │   └── templates/index.html    # Entry point
 ├── tasks/                      # 40 research tasks
 │   ├── Astronomy_000/

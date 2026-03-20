@@ -30,6 +30,7 @@ from .utils import (
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable static file caching
+app.json.sort_keys = False  # Preserve JSON key order (e.g. agent presets)
 CORS(app)
 
 # Track active runners
@@ -173,16 +174,13 @@ def api_start_run():
     if not task_dir.exists():
         return jsonify({"error": "Task not found"}), 404
 
-    # Resolve agent command: preset name or custom command string
+    # Resolve agent command from presets
     agent = data.get("agent", "")
     if agent in AGENT_PRESETS:
         agent_cmd = AGENT_PRESETS[agent]["cmd"]
         agent_name = AGENT_PRESETS[agent]["label"]
-    elif data.get("custom_cmd"):
-        agent_cmd = data["custom_cmd"]
-        agent_name = "Custom"
     else:
-        return jsonify({"error": "agent or custom_cmd required"}), 400
+        return jsonify({"error": "Unknown agent preset"}), 400
 
     runner = TaskRunner(task_id, agent_cmd=agent_cmd, agent_name=agent_name)
     run_id = runner.run_async()

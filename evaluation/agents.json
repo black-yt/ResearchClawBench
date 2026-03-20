@@ -1,0 +1,26 @@
+{
+  "claude": {
+    "label": "Claude Code",
+    "icon": "C",
+    "logo": "/static/logos/anthropic.svg",
+    "cmd": "claude --dangerously-skip-permissions -p <PROMPT> --output-format stream-json --verbose"
+  },
+  "codex": {
+    "label": "Codex CLI",
+    "icon": "X",
+    "logo": "/static/logos/openai.svg",
+    "cmd": "codex exec --full-auto <PROMPT>"
+  },
+  "openclaw": {
+    "label": "OpenClaw",
+    "icon": "O",
+    "logo": "/static/logos/openclaw.svg",
+    "cmd": "openclaw agent --agent main --timeout 3600 --message <PROMPT>"
+  },
+  "nanobot": {
+    "label": "Nanobot",
+    "icon": "N",
+    "logo": "/static/logos/nanobot.svg",
+    "cmd": "nanobot agent -m <PROMPT> -w <WORKSPACE>"
+  }
+}

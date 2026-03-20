@@ -7,9 +7,9 @@ import subprocess
 import threading
 import time
 from datetime import datetime
-from pathlib import Path
 
 from .config import AGENT_PRESETS, TASKS_DIR, WORKSPACES_DIR
+from .instructions_tmpl import INSTRUCTIONS_TEMPLATE
 from .utils import load_task_info
 
 
@@ -48,56 +48,31 @@ class TaskRunner:
         for dirname in ("code", "outputs", "report", "report/images"):
             (self.workspace / dirname).mkdir(parents=True, exist_ok=True)
 
-        # Write INSTRUCTIONS.md
-        self.instructions_path.write_text(self._build_instructions(), encoding="utf-8")
+        # Build prompt from template
+        self.prompt = self._build_instructions()
+
+        # Write INSTRUCTIONS.md (for reference / file-based agents)
+        self.instructions_path.write_text(self.prompt, encoding="utf-8")
 
         # Write initial meta with agent info
         self._write_meta("running")
 
     def _build_instructions(self) -> str:
-        """Build the full INSTRUCTIONS.md content."""
+        """Build INSTRUCTIONS.md by filling the template with task-specific content."""
         task_desc = self.task_info.get("task", "")
         data_parts = []
         for d in self.task_info.get("data", []):
-            # Paths are always ./data/..., strip leading ./ for workspace-relative path
             ws_path = d.get("path", "").lstrip("./")
             data_type = d.get("type", "")
             type_str = f" [{data_type}]" if data_type else ""
             data_parts.append(f"- **{d['name']}**{type_str} (`{ws_path}`): {d.get('description', '')}")
         data_text = "\n".join(data_parts) if data_parts else "No specific data files."
 
-        return f"""# Research Task
-
-## Task Description
-{task_desc}
-
-## Available Data Files
-{data_text}
-
-## Workspace Layout
-- `data/` — Input datasets (read-only, do not modify)
-- `related_work/` — Reference papers and materials
-- `code/` — Write your analysis code here
-- `outputs/` — Save intermediate results
-- `report/` — Write your final research report here
-- `report/images/` — Save all report figures here
-
-## Deliverables
-1. Write analysis code in `code/` that processes the data
-2. Save intermediate outputs to `outputs/`
-3. Write a comprehensive research report as `report/report.md`
-   - Include methodology, results, and discussion
-   - Use proper academic writing style
-   - **You MUST include figures in your report.** Generate plots, charts, and visualizations that support your analysis
-   - Save all report figures to `report/images/` and reference them in the report using relative paths: `images/figure_name.png`
-   - Include at least: data overview plots, main result figures, and comparison/validation plots
-
-## Guidelines
-- Install any needed Python packages via pip
-- Use matplotlib/seaborn for visualization
-- Ensure all code is reproducible
-- Document your approach clearly in the report
-"""
+        return INSTRUCTIONS_TEMPLATE.format(
+            workspace=str(self.workspace.resolve()),
+            task_desc=task_desc,
+            data_text=data_text,
+        )
 
     def _write_meta(self, status: str, extra: dict = None):
         """Write or update _meta.json."""
@@ -121,10 +96,13 @@ class TaskRunner:
         prompt_file_path = str(self.instructions_path.resolve())
         workspace_path = str(self.workspace.resolve())
 
-        cmd_str = self.agent_cmd.format(
-            prompt_file=prompt_file_path,
-            workspace=workspace_path,
-        )
+        # Replace placeholders in agent command
+        cmd_str = self.agent_cmd
+        if "<PROMPT>" in cmd_str:
+            # All agents: read file content via $(cat ...) to avoid shell escaping issues
+            cmd_str = cmd_str.replace("<PROMPT>", f'"$(cat \'{prompt_file_path}\')"')
+        if "<WORKSPACE>" in cmd_str:
+            cmd_str = cmd_str.replace("<WORKSPACE>", f'"{workspace_path}"')
 
         clean_env = os.environ.copy()
 
@@ -179,15 +157,12 @@ class TaskRunner:
         import re
         try:
             with open(self.output_path, "r", encoding="utf-8", errors="replace") as f:
-                # Only scan first 50 lines for efficiency
                 for i, line in enumerate(f):
                     if i > 50:
                         break
-                    # Codex: "model: gpt-5.4"
                     m = re.search(r'model:\s*(\S+)', line, re.IGNORECASE)
                     if m and not m.group(1).startswith('{'):
                         return m.group(1)
-                    # Claude Code stream-json: look for model in JSON
                     if '"model"' in line:
                         try:
                             d = json.loads(line)

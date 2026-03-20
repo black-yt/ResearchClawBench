@@ -1,5 +1,6 @@
 """Paths and constants for the evaluation system."""
 
+import json
 import os
 from pathlib import Path
 
@@ -16,29 +17,11 @@ WORKSPACES_DIR.mkdir(exist_ok=True)
 # Scoring model (OpenAI-compatible; override via SCORER_MODEL env var)
 SCORER_MODEL = os.environ.get("SCORER_MODEL", "gpt-5.1")
 
-# Agent presets: name -> {cmd, label, icon}
-# {prompt_file} and {workspace} are substituted at runtime
-# Command runs with cwd=workspace, {prompt_file} points to INSTRUCTIONS.md
-AGENT_PRESETS = {
-    "claude": {
-        "label": "Claude Code",
-        "icon": "C",
-        "logo": "/static/logos/anthropic.svg",
-        "cmd": 'claude --dangerously-skip-permissions -p "{prompt_file}" --output-format stream-json --verbose',
-    },
-    "codex": {
-        "label": "Codex CLI",
-        "icon": "X",
-        "logo": "/static/logos/openai.svg",
-        "cmd": 'codex exec --full-auto "$(cat \'{prompt_file}\')"',
-    },
-    "openclaw": {
-        "label": "OpenClaw",
-        "icon": "O",
-        "logo": "/static/logos/openclaw.svg",
-        "cmd": "openclaw agent --agent main --timeout 3600 --message \"$(printf 'You are an autonomous research agent. Do NOT output a plan or ask for confirmation. Immediately start using your tools (exec, write, read) to complete the task step by step. Install packages with pip, write Python code, run it, generate figures, and write the report. Work inside: {workspace}\\n\\n'; cat '{prompt_file}')\"",
-    },
-}
+# Agent presets loaded from agents.json
+# <PROMPT> and <WORKSPACE> are replaced at runtime in run_task.py
+_agents_path = Path(__file__).parent / "agents.json"
+with open(_agents_path, "r", encoding="utf-8") as _f:
+    AGENT_PRESETS = json.load(_f)
 
 # Image extensions recognized for vision scoring
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".svg"}

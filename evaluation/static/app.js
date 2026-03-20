@@ -133,11 +133,6 @@ async function loadConfig() {
       btn.onclick = () => selectAgent(key);
       container.appendChild(btn);
     }
-    const custom = document.createElement('div');
-    custom.className = 'agent-option'; custom.dataset.agent = 'custom';
-    custom.innerHTML = '<span class="agent-option-icon" style="background:#71717a">+</span>Custom';
-    custom.onclick = () => selectAgent('custom');
-    container.appendChild(custom);
     const first = Object.keys(cfg.presets || {})[0];
     if (first) selectAgent(first);
   } catch (e) { console.error(e); }
@@ -146,7 +141,6 @@ async function loadConfig() {
 function selectAgent(key) {
   state.selectedAgent = key;
   document.querySelectorAll('.agent-option').forEach(el => el.classList.toggle('active', el.dataset.agent === key));
-  document.getElementById('agent-custom-row').style.display = key === 'custom' ? 'block' : 'none';
 }
 
 /* ── Dashboard: Frontier Chart + Leaderboard ────────────────────────── */
@@ -704,7 +698,17 @@ async function selectRun(runId) {
     if (isStale()) return;
     showDuration(meta.duration_seconds);
     if (meta.status === 'running') {
-      startDurationTimer();
+      // Calculate elapsed time from run start timestamp (YYYYMMDD_HHMMSS)
+      let elapsed = 0;
+      if (meta.timestamp) {
+        const ts = meta.timestamp;
+        const startDate = new Date(
+          parseInt(ts.slice(0,4)), parseInt(ts.slice(4,6))-1, parseInt(ts.slice(6,8)),
+          parseInt(ts.slice(9,11)), parseInt(ts.slice(11,13)), parseInt(ts.slice(13,15))
+        );
+        elapsed = Math.max(0, Math.floor((Date.now() - startDate.getTime()) / 1000));
+      }
+      startDurationTimer(elapsed);
       startStreaming(runId); switchTab(state.lastTab); loadWorkspace(runId);
     } else {
       // Load workspace + file first, then the rest in parallel
@@ -768,11 +772,7 @@ async function loadSavedOutput(runId) {
 /* ── Start Run ───────────────────────────────────────────────────────── */
 async function startRun() {
   if (!state.currentTaskId || !state.selectedAgent) return;
-  const body = { task_id: state.currentTaskId };
-  if (state.selectedAgent === 'custom') {
-    const cmd = document.getElementById('agent-custom-cmd').value.trim();
-    if (!cmd) return; body.custom_cmd = cmd;
-  } else { body.agent = state.selectedAgent; }
+  const body = { task_id: state.currentTaskId, agent: state.selectedAgent };
   const btn = document.getElementById('btn-start-run');
   btn.disabled = true; btn.innerHTML = '<span class="btn-icon">&#9654;</span> Starting...';
   try {
@@ -1060,6 +1060,14 @@ function renderStaticTaskFileTree(files, taskId) {
             const url = `data/tasks/${taskId}/workspace/${f.path}`;
             renderFileContent(f.path, f.name, url, null, `data/tasks/${taskId}/workspace/`, f.path);
           }
+        };
+      } else {
+        item.onclick = (e) => {
+          e.stopPropagation();
+          document.querySelectorAll('.file-tree-item').forEach(el => el.classList.remove('active'));
+          item.classList.add('active');
+          document.getElementById('file-content-header').textContent = f.path;
+          document.getElementById('file-content-body').innerHTML = '<div class="placeholder">Binary file — cannot preview.<br><br>View source on <a href="https://github.com/InternScience/ResearchClawBench" target="_blank" style="color:var(--accent)">GitHub</a></div>';
         };
       }
       const pp = f.path.includes('/') ? f.path.substring(0, f.path.lastIndexOf('/')) : null;
@@ -1543,11 +1551,12 @@ function showDuration(seconds) {
   if (el) el.textContent = formatDuration(seconds);
 }
 
-function startDurationTimer() {
+function startDurationTimer(offsetSeconds) {
   stopDurationTimer();
-  _durationStart = Date.now();
+  const offset = offsetSeconds || 0;
+  _durationStart = Date.now() - offset * 1000;
   const el = document.getElementById('duration-display');
-  if (el) el.textContent = formatDuration(0);
+  if (el) el.textContent = formatDuration(offset);
   _durationTimer = setInterval(() => {
     const elapsed = Math.floor((Date.now() - _durationStart) / 1000);
     if (el) el.textContent = formatDuration(elapsed);
