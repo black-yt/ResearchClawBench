@@ -1474,8 +1474,6 @@ function setupButtons() {
   bind('btn-toggle-tree', 'onclick', toggleTreeCollapse);
   bind('btn-toggle-domains', 'onclick', toggleDomainCollapse);
 
-  document.querySelectorAll('.tab').forEach(tab => tab.onclick = () => switchTab(tab.dataset.tab));
-
   // Auto-disable follow when user scrolls UP (not when already at bottom)
   const termBody = document.getElementById('terminal-body');
   termBody.addEventListener('wheel', (e) => {

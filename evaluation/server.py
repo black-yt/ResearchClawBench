@@ -137,7 +137,6 @@ def api_task_file(task_id):
 
     # Special: generate INSTRUCTIONS.md on-the-fly
     if file_path == "INSTRUCTIONS.md":
-        from .run_task import TaskRunner
         runner = TaskRunner(task_id)
         content = runner._build_instructions()
         return content, 200, {"Content-Type": "text/markdown; charset=utf-8"}
