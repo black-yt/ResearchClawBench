@@ -457,11 +457,12 @@ body { height: 100vh; font-family: var(--font); font-size: 17px; line-height: 1.
 }
 
 /* file tree */
-.research-col-tree .col-body { padding: 6px; }
+.research-col-tree .col-body { padding: 6px; overflow-x: auto; }
 .file-tree-item {
     display: flex; align-items: center; gap: 4px;
     padding: 3px 6px; font-size: 13.5px; cursor: pointer;
     border-radius: 4px; color: var(--text-secondary); transition: all 0.1s;
+    white-space: nowrap; min-width: fit-content;
 }
 .file-tree-item:hover { background: var(--bg-hover); color: var(--text); }
 .file-tree-item.active { background: var(--accent-subtle); color: var(--accent); }
@@ -469,6 +470,9 @@ body { height: 100vh; font-family: var(--font); font-size: 17px; line-height: 1.
 .file-tree-icon { width: 14px; text-align: center; flex-shrink: 0; font-size: 13px; }
 .folder-arrow { font-size: 11px; opacity: 0.4; }
 .file-tree-children {}
+.tree-truncated { cursor: default; opacity: 0.5; }
+.tree-truncated-text { font-size: 12px; font-style: italic; color: var(--text-tertiary); }
+.tree-truncated-badge { font-size: 10px; color: var(--text-tertiary); margin-left: 4px; }
 
 /* editor */
 #file-content-header { font-family: var(--mono); font-size: 13px; color: var(--text-tertiary); }

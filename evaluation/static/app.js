@@ -1039,12 +1039,23 @@ function renderStaticTaskFileTree(files, taskId) {
   const tree = document.getElementById('file-tree'); tree.innerHTML = '';
   const dirMap = {};
   for (const f of files) {
+    if (f.type === 'truncated') {
+      const depth = (f.path.match(/\//g) || []).length;
+      const item = document.createElement('div');
+      item.className = 'file-tree-item tree-truncated';
+      item.style.paddingLeft = `${6 + depth * 14}px`;
+      item.innerHTML = `<span class="file-tree-icon" style="visibility:hidden">.</span><span class="tree-truncated-text">${esc(f.name)}</span>`;
+      const pp = f.path.includes('/') ? f.path.substring(0, f.path.lastIndexOf('/')) : null;
+      (pp && dirMap[pp] || tree).appendChild(item);
+      continue;
+    }
     const depth = (f.path.match(/\//g) || []).length;
     const item = document.createElement('div');
     item.className = `file-tree-item ${f.type==='directory'?'dir':''}`;
     item.style.paddingLeft = `${6 + depth * 14}px`;
     if (f.type === 'directory') {
-      item.innerHTML = `<span class="file-tree-icon folder-arrow">&#9660;</span><span class="file-tree-icon">&#128193;</span>${esc(f.name)}`;
+      const truncLabel = f.truncated ? ' <span class="tree-truncated-badge">…</span>' : '';
+      item.innerHTML = `<span class="file-tree-icon folder-arrow">&#9660;</span><span class="file-tree-icon">&#128193;</span>${esc(f.name)}${truncLabel}`;
       item.dataset.path = f.path; item.dataset.open = 'true';
       const child = document.createElement('div'); child.className = 'file-tree-children';
       item.onclick = (e) => { e.stopPropagation(); const open = item.dataset.open === 'true'; item.dataset.open = open ? 'false' : 'true'; child.style.display = open ? 'none' : 'block'; item.querySelector('.folder-arrow').innerHTML = open ? '&#9654;' : '&#9660;'; };
@@ -1092,11 +1103,12 @@ function renderStaticTaskFileTree(files, taskId) {
 
 async function loadWorkspace(runId) {
   try {
-    const inputFiles = await (await fetch(`${API}/api/runs/${runId}/input-files`)).json();
+    const [inputFiles, outputFiles] = await Promise.all([
+      (await fetch(`${API}/api/runs/${runId}/input-files`)).json(),
+      (await fetch(`${API}/api/runs/${runId}/output-files`)).json(),
+    ]);
     if (state.currentRunId !== runId) return [];
     state._cachedInputFiles = inputFiles;
-    const outputFiles = await (await fetch(`${API}/api/runs/${runId}/output-files`)).json();
-    if (state.currentRunId !== runId) return [];
     const allFiles = _sortFlatTree([...inputFiles, ...outputFiles]);
     renderFileTree(allFiles, runId, null);
     return outputFiles;
@@ -1126,12 +1138,23 @@ function renderFileTree(files, runId, taskId) {
   const tree = document.getElementById('file-tree'); tree.innerHTML = '';
   const dirMap = {};
   for (const f of files) {
+    if (f.type === 'truncated') {
+      const depth = (f.path.match(/\//g) || []).length;
+      const item = document.createElement('div');
+      item.className = 'file-tree-item tree-truncated';
+      item.style.paddingLeft = `${6 + depth * 14}px`;
+      item.innerHTML = `<span class="file-tree-icon" style="visibility:hidden">.</span><span class="tree-truncated-text">${esc(f.name)}</span>`;
+      const pp = f.path.includes('/') ? f.path.substring(0, f.path.lastIndexOf('/')) : null;
+      (pp && dirMap[pp] || tree).appendChild(item);
+      continue;
+    }
     const depth = (f.path.match(/\//g) || []).length;
     const item = document.createElement('div');
     item.className = `file-tree-item ${f.type==='directory'?'dir':''}`;
     item.style.paddingLeft = `${6 + depth * 14}px`;
     if (f.type === 'directory') {
-      item.innerHTML = `<span class="file-tree-icon folder-arrow">&#9660;</span><span class="file-tree-icon">&#128193;</span>${esc(f.name)}`;
+      const truncLabel = f.truncated ? ' <span class="tree-truncated-badge">…</span>' : '';
+      item.innerHTML = `<span class="file-tree-icon folder-arrow">&#9660;</span><span class="file-tree-icon">&#128193;</span>${esc(f.name)}${truncLabel}`;
       item.dataset.path = f.path; item.dataset.open = 'true';
       const child = document.createElement('div'); child.className = 'file-tree-children';
       item.onclick = (e) => {

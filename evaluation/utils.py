@@ -109,36 +109,46 @@ def safe_resolve(base: Path, user_path: str) -> Optional[Path]:
     return None
 
 
-def build_file_tree(root: Path, prefix: str = "") -> list:
+def build_file_tree(root: Path, prefix: str = "", max_per_dir: int = 0, max_depth: int = 0) -> list:
     """Build a file tree as a list of dicts for a directory.
 
-    Returns a flat list where directories appear before their children.
-    Skips hidden files and internal metadata files.
+    max_per_dir: max entries per directory (0 = unlimited).
+    max_depth: max recursion depth (0 = unlimited).
+    Truncated directories are marked with "truncated": True.
     """
     skip_names = {"_meta.json", "_agent_output.jsonl", "_score.json", ".claude", "__pycache__"}
     tree = []
-    try:
-        entries = sorted(root.iterdir(), key=lambda p: (not p.is_dir(), p.name.lower()))
-    except PermissionError:
-        return tree
 
-    for entry in entries:
-        if entry.name.startswith(".") or entry.name in skip_names:
-            continue
-        rel = f"{prefix}/{entry.name}" if prefix else entry.name
-        if entry.is_dir():
-            tree.append({"name": entry.name, "path": rel, "type": "directory"})
-            tree.extend(build_file_tree(entry, rel))
-        else:
-            try:
-                stat = entry.stat()
-            except OSError:
-                continue
-            tree.append({
-                "name": entry.name,
-                "path": rel,
-                "type": "file",
-                "size": stat.st_size,
-                "mtime": stat.st_mtime,
-            })
+    def _walk(root, prefix, depth):
+        try:
+            entries = sorted(root.iterdir(), key=lambda p: (not p.is_dir(), p.name.lower()))
+        except PermissionError:
+            return
+        entries = [e for e in entries if not e.name.startswith(".") and e.name not in skip_names]
+        total = len(entries)
+        limited = max_per_dir and total > max_per_dir
+        if limited:
+            entries = entries[:max_per_dir]
+        for entry in entries:
+            rel = f"{prefix}/{entry.name}" if prefix else entry.name
+            if entry.is_dir():
+                node = {"name": entry.name, "path": rel, "type": "directory"}
+                tree.append(node)
+                if max_depth and depth >= max_depth:
+                    node["truncated"] = True
+                else:
+                    _walk(entry, rel, depth + 1)
+            else:
+                try:
+                    stat = entry.stat()
+                except OSError:
+                    continue
+                tree.append({
+                    "name": entry.name, "path": rel, "type": "file",
+                    "size": stat.st_size, "mtime": stat.st_mtime,
+                })
+        if limited:
+            tree.append({"name": f"… {total - max_per_dir} more items", "path": prefix + "/_more", "type": "truncated"})
+
+    _walk(root, prefix, 1)
     return tree
