@@ -227,4 +227,4 @@ Be respectful, constructive, and collaborative. We're all working toward the sam
 ## Questions?
 
 - Open a [GitHub Issue](https://github.com/InternScience/ResearchClawBench/issues)
-- Email: [xu_wanghan@sjtu.edu.cn](mailto:xu_wanghan@sjtu.edu.cn)
+- Email: [xu_wanghan@sjtu.edu.cn](https://black-yt.github.io/)
