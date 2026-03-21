@@ -361,7 +361,7 @@ We welcome contributions in several forms — see [CONTRIBUTING.md](CONTRIBUTING
 
 📧 **Email**: [xu_wanghan@sjtu.edu.cn](https://black-yt.github.io/)
 
-🤝 **Community**:
+📬 **Community**:
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/InternScience/ResearchClawBench/main/assets/wechat.jpg" alt="WeChat" width="200">
@@ -388,11 +388,11 @@ If you would like to cite our work, please use the following BibTeX.
 
 ## ⭐ Star History
 
-<a href="https://star-history.com/#InternScience/ResearchClawBench&Date">
+<a href="https://www.star-history.com/?repos=InternScience%2FResearchClawBench&type=date&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=InternScience/ResearchClawBench&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=InternScience/ResearchClawBench&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=InternScience/ResearchClawBench&type=Date" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/image?repos=InternScience/ResearchClawBench&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/image?repos=InternScience/ResearchClawBench&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/image?repos=InternScience/ResearchClawBench&type=date&legend=top-left" />
  </picture>
 </a>
 
