@@ -353,13 +353,21 @@ ResearchClawBench/
 
 ## 🤝 Contributing
 
-We welcome contributions in several forms:
+We welcome contributions in several forms — see [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 - **New tasks** — Add research challenges in existing or new domains
 - **New agents** — Add presets for emerging coding agents
 - **Bug reports** — Open an issue
 
 📧 **Email**: [xu_wanghan@sjtu.edu.cn](https://black-yt.github.io/)
+
+🤝 **Community**:
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/InternScience/ResearchClawBench/main/assets/wechat.jpg" alt="WeChat" width="200">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/InternScience/ResearchClawBench/main/assets/whatsappjpg.jpg" alt="WhatsApp" width="200">
+</p>
 
 ---
 
