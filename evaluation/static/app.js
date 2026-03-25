@@ -1512,13 +1512,13 @@ function setupButtons() {
 
   // Auto-disable follow when user scrolls UP (not when already at bottom)
   const termBody = document.getElementById('terminal-body');
-  termBody.addEventListener('wheel', (e) => {
+  if (termBody) termBody.addEventListener('wheel', (e) => {
     if (!state.autoFollow) return;
     // Only cancel if scrolling up, or not at the bottom
     const atBottom = termBody.scrollHeight - termBody.scrollTop - termBody.clientHeight < 30;
     if (e.deltaY < 0 || !atBottom) {
       state.autoFollow = false;
-      document.getElementById('toggle-track').classList.remove('on');
+      const _tt = document.getElementById('toggle-track'); if (_tt) _tt.classList.remove('on');
     }
   });
 }
