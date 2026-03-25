@@ -632,9 +632,17 @@ async function selectRun(runId) {
   if (stopBtn) stopBtn.style.display = 'none';
   document.querySelectorAll('.run-item').forEach(el => el.classList.toggle('active', el.dataset.runId === runId));
   document.getElementById('file-content-header').textContent = 'No file selected';
-  document.getElementById('file-content-body').innerHTML = '<div class="placeholder">Select a file from the explorer</div>';
+  document.getElementById('file-content-body').innerHTML = '<div class="placeholder">Loading...</div>';
   document.getElementById('terminal-status').textContent = 'Agent Output';
   document.getElementById('terminal-status').className = 'terminal-status';
+  document.getElementById('terminal-body').innerHTML = '<div class="placeholder">Loading...</div>';
+  document.getElementById('file-tree').innerHTML = '<div class="placeholder" style="padding:8px;opacity:.6">Loading...</div>';
+  // Immediately clear eval tab to avoid stale content during load
+  document.getElementById('report-content').innerHTML = '<div class="placeholder">Loading...</div>';
+  document.getElementById('score-total-area').innerHTML = '';
+  document.querySelectorAll('.checklist-score-slot').forEach(el => el.innerHTML = '');
+  document.querySelectorAll('.score-item-reasoning').forEach(el => el.remove());
+  document.getElementById('btn-score').textContent = 'Score';
 
   const isStale = () => state.currentRunId !== runId;
 
@@ -1179,6 +1187,10 @@ function renderFileTree(files, runId, taskId) {
             document.getElementById('file-content-header').textContent = f.path;
             const reason = isViewableFile(f.name) ? 'File too large to preview.' : 'Binary file — cannot preview.';
             document.getElementById('file-content-body').innerHTML = `<div class="placeholder">${reason}<br><br>View source on <a href="https://github.com/InternScience/ResearchClawBench" target="_blank" style="color:var(--accent)">GitHub</a></div>`;
+          } else if (f.shared) {
+            // Input file shared across all runs — load from task workspace
+            const url = `data/tasks/${state.currentTaskId}/workspace/${f.path}`;
+            renderFileContent(f.path, f.name, url, null, `data/tasks/${state.currentTaskId}/workspace/`, f.path);
           } else {
             const url = `data/runs/${runId}/workspace/${f.path}`;
             renderFileContent(f.path, f.name, url, null, `data/runs/${runId}/workspace/`, f.path);

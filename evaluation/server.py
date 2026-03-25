@@ -103,7 +103,7 @@ def api_task_files(task_id):
     for subdir in ["data", "related_work"]:
         sub_path = task_dir / subdir
         if sub_path.exists():
-            top_dirs[subdir] = build_file_tree(sub_path, subdir, max_per_dir=20, max_depth=4)
+            top_dirs[subdir] = build_file_tree(sub_path, subdir, max_per_dir=10, max_depth=3)
 
     # Empty workspace dirs (no children)
     for d in ["code", "outputs", "report"]:
@@ -340,7 +340,7 @@ def api_run_input_files(run_id):
         sub = workspace / subdir
         if sub.exists():
             tree.append({"name": subdir, "path": subdir, "type": "directory"})
-            tree.extend(build_file_tree(sub, subdir, max_per_dir=20, max_depth=4))
+            tree.extend(build_file_tree(sub, subdir, max_per_dir=10, max_depth=3))
     return jsonify(tree)
 
 
@@ -358,7 +358,7 @@ def api_run_output_files(run_id):
             if subdir == "report":
                 tree.extend(build_file_tree(sub, subdir))
             else:
-                tree.extend(build_file_tree(sub, subdir, max_per_dir=20, max_depth=3))
+                tree.extend(build_file_tree(sub, subdir, max_per_dir=10, max_depth=3))
     instr = workspace / "INSTRUCTIONS.md"
     if instr.exists():
         st = instr.stat()
