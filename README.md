@@ -6,6 +6,7 @@
 
 [![Official Site](https://img.shields.io/badge/Official%20Site-333399.svg?logo=homepage)](https://InternScience.github.io/ResearchClawBench-Home/)&#160;
 [![GitHub](https://img.shields.io/badge/GitHub-000000?logo=github&logoColor=white)](https://github.com/InternScience/ResearchClawBench)&#160;
+[![Hugging Face Dataset](https://img.shields.io/badge/Hugging%20Face-Dataset-FFD21E?logo=huggingface&logoColor=000)](https://huggingface.co/datasets/InternScience/ResearchClawBench)&#160;
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Domains](https://img.shields.io/badge/Domains-10-green.svg)](#-10-scientific-domains)
@@ -48,6 +49,7 @@ Unlike benchmarks that test coding ability or factual recall, ResearchClawBench 
 
 ## 📢 News
 
+- **2026-03-27** 🤗 Released a Hugging Face dataset mirror at [InternScience/ResearchClawBench](https://huggingface.co/datasets/InternScience/ResearchClawBench), including 10 additional tasks from ResearchClawBench-Self and a task downloader script.
 - **2026-03-20** 🐈 Added [Nanobot](https://github.com/HKUDS/nanobot) as a new agent — ultra-lightweight OpenClaw alternative with reliable multi-step tool execution. Agent config moved to `agents.json` for easy customization.
 - **2026-03-19** 🚀 Initial release with Claude Code, Codex CLI, and OpenClaw support. 40 tasks across 10 scientific domains.
 
@@ -255,7 +257,36 @@ cd ResearchClawBench
 pip install -r evaluation/requirements.txt
 ```
 
-### 2. Configure
+### 2. Download Additional Hugging Face Tasks (Optional)
+
+The Hugging Face dataset mirror at [InternScience/ResearchClawBench](https://huggingface.co/datasets/InternScience/ResearchClawBench) currently includes **10 additional tasks beyond the 40 tasks in this repository**, sourced from `ResearchClawBench-Self` and stored in the same `tasks/<TaskID>/...` layout.
+
+If you want to use these extra tasks directly in this repository, set `--output-dir` to your local `tasks/` directory.
+
+Download the helper script:
+
+```bash
+pip install huggingface_hub
+curl -L -o download_tasks.py https://huggingface.co/datasets/InternScience/ResearchClawBench/resolve/main/download_tasks.py
+```
+
+Download all mirrored Hugging Face tasks:
+
+```bash
+python download_tasks.py --all --output-dir /path/to/ResearchClawBench/tasks
+```
+
+Download one or more specific tasks:
+
+```bash
+python download_tasks.py --task Astronomy_005 --task Physics_005 --output-dir /path/to/ResearchClawBench/tasks
+```
+
+The downloaded files are placed directly under that tasks directory, for example `/path/to/ResearchClawBench/tasks/Astronomy_005/...`.
+
+Any task directory placed under `tasks/` with a valid `task_info.json` will be discovered automatically by the evaluation UI/API.
+
+### 3. Configure
 
 Create `evaluation/.env` with your scoring model credentials:
 
@@ -265,7 +296,7 @@ OPENAI_BASE_URL=https://api.openai.com/v1
 SCORER_MODEL=gpt-5.1
 ```
 
-### 3. Install Agents
+### 4. Install Agents
 
 Install whichever agent(s) you plan to benchmark. You do not need all four.
 
@@ -276,7 +307,7 @@ Install whichever agent(s) you plan to benchmark. You do not need all four.
 | **OpenClaw** | [OpenClaw](https://openclaw.ai/) | Official website and setup entry |
 | **Nanobot** | [HKUDS/nanobot](https://github.com/HKUDS/nanobot) | Official GitHub repository |
 
-### 4. Launch
+### 5. Launch
 
 ```bash
 python -m evaluation
@@ -284,7 +315,7 @@ python -m evaluation
 
 Open **http://localhost:5000** — browse tasks, pick an agent, hit **Start Run**, and watch the research happen live.
 
-### 5. Score
+### 6. Score
 
 After a run completes, switch to the **Evaluation** tab and click **Score**. The multimodal LLM judge evaluates each checklist item and returns per-item scores with reasoning.
 
