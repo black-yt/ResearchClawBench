@@ -50,7 +50,7 @@ Unlike benchmarks that test coding ability or factual recall, ResearchClawBench 
 ## 📢 News
 
 - **2026-03-27** 🤗 Released a Hugging Face dataset mirror at [InternScience/ResearchClawBench](https://huggingface.co/datasets/InternScience/ResearchClawBench), including 10 additional tasks from ResearchClawBench-Self and a task downloader script.
-- **2026-03-27** 📨 Opened the [ResearchClawBench submission Space](https://huggingface.co/spaces/InternScience/ResearchClawBench-Submit) for community task uploads. New tasks are validated there and reviewed through Hugging Face dataset PRs instead of being added to this GitHub repository.
+- **2026-03-27** 📨 Opened the [ResearchClawBench submission Space](https://huggingface.co/spaces/InternScience/ResearchClawBench-Task-Submit) for community task uploads. New tasks are validated there and reviewed through Hugging Face dataset PRs instead of being added to this GitHub repository.
 - **2026-03-20** 🐈 Added [Nanobot](https://github.com/HKUDS/nanobot) as a new agent — ultra-lightweight OpenClaw alternative with reliable multi-step tool execution. Agent config moved to `agents.json` for easy customization.
 - **2026-03-19** 🚀 Initial release with Claude Code, Codex CLI, and OpenClaw support. 40 tasks across 10 scientific domains.
 
@@ -322,9 +322,9 @@ After a run completes, switch to the **Evaluation** tab and click **Score**. The
 
 ## 📨 Submit New Tasks
 
-The GitHub benchmark repository stays focused on the base 40 tasks. New task submissions should go through the [ResearchClawBench submission Space](https://huggingface.co/spaces/InternScience/ResearchClawBench-Submit), which validates the uploaded zip and opens a PR against the [Hugging Face dataset repository](https://huggingface.co/datasets/InternScience/ResearchClawBench) for maintainer review.
+The GitHub benchmark repository stays focused on the base 40 tasks. New task submissions should go through the [ResearchClawBench submission Space](https://huggingface.co/spaces/InternScience/ResearchClawBench-Task-Submit), which validates the uploaded zip and opens a PR against the [Hugging Face dataset repository](https://huggingface.co/datasets/InternScience/ResearchClawBench) for maintainer review.
 
-- Submission Space: [InternScience/ResearchClawBench-Submit](https://huggingface.co/spaces/InternScience/ResearchClawBench-Submit)
+- Submission Space: [InternScience/ResearchClawBench-Task-Submit](https://huggingface.co/spaces/InternScience/ResearchClawBench-Task-Submit)
 - Dataset destination: [InternScience/ResearchClawBench](https://huggingface.co/datasets/InternScience/ResearchClawBench)
 - Example task format: [tasks/Astronomy_000](https://github.com/InternScience/ResearchClawBench/tree/main/tasks/Astronomy_000)
 
