@@ -240,6 +240,23 @@ Each domain contains **4 carefully curated tasks** with complete experimental da
 
 **40 tasks total** — each a self-contained research challenge selected from high-quality human-authored publications, spanning the full spectrum from data analysis to novel scientific insight.
 
+### 🏆 Leaderboard
+
+You can view the leaderboard on our [Website](https://internscience.github.io/ResearchClawBench-Home/), which is **updated in real time**.
+
+<div align="center">
+<img src="assets/leaderboard.png" width="90%" />
+<p><em>Leaderboard</em></p>
+</div>
+
+The built-in dashboard aggregates the best score per (task, agent) pair and displays:
+
+- **Frontier chart** — best score per task across all agents
+- **Leaderboard table** — clickable cells linking to individual runs
+- **Per-task breakdown** — view any agent's report, code, and score reasoning
+
+The frontier represents the **state of the art** — every point above 50 is uncharted territory where AI surpasses human researchers on that specific task.
+
 ### 📁 Project Structure
 
 ```
@@ -264,23 +281,6 @@ ResearchClawBench/
 │   └── ...                     # 10 domains x 4 tasks
 └── workspaces/                 # Generated at runtime (gitignored)
 ```
-
-### 🏆 Leaderboard
-
-You can view the leaderboard on our [Website](https://internscience.github.io/ResearchClawBench-Home/), which is **updated in real time**.
-
-<div align="center">
-<img src="assets/leaderboard.png" width="90%" />
-<p><em>Leaderboard</em></p>
-</div>
-
-The built-in dashboard aggregates the best score per (task, agent) pair and displays:
-
-- **Frontier chart** — best score per task across all agents
-- **Leaderboard table** — clickable cells linking to individual runs
-- **Per-task breakdown** — view any agent's report, code, and score reasoning
-
-The frontier represents the **state of the art** — every point above 50 is uncharted territory where AI surpasses human researchers on that specific task.
 
 ---
 
