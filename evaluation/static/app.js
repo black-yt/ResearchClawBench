@@ -689,7 +689,7 @@ async function selectRun(runId) {
         catch (_) { if (line.trim()) appendLine(line.trim(), ''); }
       }
       state.autoFollow = prevFollow;
-      if (prevFollow) termBody.scrollTop = termBody.scrollHeight;
+      termBody.scrollTop = termBody.scrollHeight;
     } else { termBody.innerHTML = '<div class="placeholder">No agent output</div>'; }
     // Report
     if (runData && runData.report) {
@@ -780,7 +780,7 @@ async function loadSavedOutput(runId) {
       try { appendMsg(JSON.parse(line)); } catch (_) { appendLine(line, ''); }
     }
     state.autoFollow = prevFollow;
-    if (prevFollow) body.scrollTop = body.scrollHeight;
+    body.scrollTop = body.scrollHeight;
   } catch (_) { body.innerHTML = '<div class="placeholder">Failed to load output</div>'; }
 }
 
