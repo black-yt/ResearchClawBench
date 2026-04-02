@@ -211,5 +211,6 @@ __marimo__/
 
 # Claude Code local config
 .claude/
+.codex
 CLAUDE.md
 AGENTS.md
