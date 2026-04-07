@@ -10,7 +10,7 @@ Thank you for your interest in contributing! ResearchClawBench welcomes contribu
 
 ## 1. Contributing New Research Tasks
 
-Each task is a self-contained research challenge derived from a real published paper. To contribute a task, create a directory under `tasks/` following the naming convention `{Domain}_{NNN}` (e.g., `Biology_000`).
+Each task is a curated research challenge derived from a real published paper. To contribute a task, create a directory under `tasks/` following the naming convention `{Domain}_{NNN}` (e.g., `Biology_000`).
 
 ### Directory Structure
 
@@ -49,7 +49,7 @@ tasks/YourDomain_000/
 ```
 
 **Requirements:**
-- `task`: Clear, self-contained research task description. The agent receives only this text and the data files — no other context.
+- `task`: Clear research task description grounded in the provided workspace. The agent receives this task text together with the workspace contents.
 - `data[].path`: Must start with `./data/` (workspace-relative path).
 - `data[].type`: File format (e.g., CSV, JSON, TXT, PDF, HDF5).
 
@@ -106,7 +106,7 @@ Before submitting:
 - [ ] `target_study/checklist.json` is valid JSON with weights summing to ~1.0
 - [ ] `target_study/paper.pdf` is the original published paper
 - [ ] Image items in checklist have corresponding files in `target_study/images/`
-- [ ] A human researcher can reproduce the paper's key results using only the provided data and instructions
+- [ ] A human researcher can reproduce the paper's key results from the provided workspace and instructions
 
 ---
 

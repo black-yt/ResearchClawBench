@@ -28,7 +28,7 @@
 
 ResearchClawBench is a benchmark that measures whether AI coding agents can **independently conduct scientific research** — from reading raw data to producing publication-quality reports — and then rigorously evaluates the results against **real human-authored papers**.
 
-Unlike benchmarks that test coding ability or factual recall, ResearchClawBench asks: *given the same data and tools a human researcher had, can an AI agent arrive at the same (or better) scientific conclusions?*
+Unlike benchmarks that test coding ability or factual recall, ResearchClawBench asks: *given a curated scientific workspace and the same research goal, can an AI agent arrive at the same (or better) scientific conclusions?*
 
 ## Overview
 
@@ -37,9 +37,9 @@ Unlike benchmarks that test coding ability or factual recall, ResearchClawBench 
 <table>
 <tr>
 <td align="center" width="25%">🔄<br/><b>Two-Stage Pipeline</b><br/><sub>Autonomous research + rigorous peer-review-style evaluation</sub></td>
-<td align="center" width="25%">🧪<br/><b>40 Real-Science Tasks</b><br/><sub>10 disciplines, complete datasets from published papers</sub></td>
+<td align="center" width="25%">🧪<br/><b>40 Real-Science Tasks</b><br/><sub>10 disciplines, curated datasets from published papers</sub></td>
 <td align="center" width="25%">👁️<br/><b>Expert-Annotated Data</b><br/><sub>Tasks, checklists & datasets curated by domain experts</sub></td>
-<td align="center" width="25%">🤖<br/><b>Multi-Agent Support</b><br/><sub>Claude Code, Codex CLI, OpenClaw, Nanobot & custom agents</sub></td>
+<td align="center" width="25%">🤖<br/><b>Multi-Agent Support</b><br/><sub>Claude Code, Codex CLI, OpenClaw, Nanobot, EvoScientist, ResearchHarness & custom agents</sub></td>
 </tr>
 <tr>
 <td align="center">🚀<br/><b>Re-Discovery to New-Discovery</b><br/><sub>50 = match the paper, 70+ = surpass it</sub></td>
@@ -57,14 +57,15 @@ https://github.com/user-attachments/assets/94829265-80a8-4d61-a744-3800603de6d9
 
 Most AI benchmarks evaluate what models **know**. We evaluate what agents can **do**.
 
-- **Real science, not toy problems.** 40 tasks sourced from published papers across 10 disciplines, each with complete experimental datasets.
+- **Real science, not toy problems.** 40 tasks sourced from published papers across 10 disciplines, each with curated experimental datasets.
 - **Two-stage pipeline.** Autonomous research first, rigorous evaluation second — just like peer review.
 - **Fine-grained, multimodal scoring.** A weighted checklist with text and image criteria, judged by an LLM acting as a strict peer reviewer.
-- **Agent-agnostic.** Ships with first-class support for Claude Code, Codex CLI, and OpenClaw. Bring your own agent in one line.
+- **Agent-agnostic.** Ships with built-in support for Claude Code, Codex CLI, OpenClaw, Nanobot, EvoScientist, and a lightweight ResearchHarness baseline. Bring your own agent in one line.
 - **From Re-Discovery to New-Discovery.** Scoring above 50 means matching the original paper; above 70 means *surpassing* it. The frontier is wide open.
 
 ### 📢 News
 
+- **2026-04-07** 🧪 Added built-in [ResearchHarness](https://github.com/black-yt/ResearchHarness) support as a lightweight baseline agent for testing different LLMs under the same ResearchClawBench workflow.
 - **2026-03-30** 🧬 Added built-in [EvoScientist](https://github.com/EvoScientist/EvoScientist) support and clarified multimodal judge prompting so the first attached image is explicitly treated as the ground-truth figure.
 - **2026-03-27** 🤗 Released a Hugging Face dataset mirror at [InternScience/ResearchClawBench](https://huggingface.co/datasets/InternScience/ResearchClawBench), including 10 additional tasks from ResearchClawBench-Self and a task downloader script.
 - **2026-03-27** 📨 Opened the [ResearchClawBench submission Space](https://huggingface.co/spaces/InternScience/ResearchClawBench-Task-Submit) for community task uploads. New tasks are validated there and reviewed through Hugging Face dataset PRs instead of being added to this GitHub repository.
@@ -100,9 +101,9 @@ flowchart TD
 
 3. **Checklist Design** — Experts create a fine-grained evaluation checklist with weighted criteria (text and image items), each with specific technical keywords that a judge must verify.
 
-4. **Data & Related Work Collection** — The original datasets used in the paper are gathered, along with relevant reference materials, to form a self-contained research workspace.
+4. **Data & Related Work Collection** — The datasets and related reference materials are curated to form a research workspace for the task.
 
-5. **Human Reproduction & Validation** — Human researchers independently reproduce the paper's results using only the provided data and instructions, verifying that every checklist item is achievable. This ensures the benchmark is fair and the checklist is grounded in reality.
+5. **Human Reproduction & Validation** — Human researchers independently reproduce the paper's results from the provided workspace and instructions, verifying that every checklist item is achievable. This ensures the benchmark is fair and the checklist is grounded in reality.
 
 ### ⚙️ How It Works
 
@@ -239,7 +240,7 @@ Each domain contains **4 carefully curated tasks** with complete experimental da
 | **Neuroscience** | Neural decoding, brain signal processing | `.csv`, `.h5`, `.yaml` |
 | **Physics** | Quantum geometry, superfluid stiffness | `.h5`, `.json`, `.csv` |
 
-**40 tasks total** — each a self-contained research challenge selected from high-quality human-authored publications, spanning the full spectrum from data analysis to novel scientific insight.
+**40 tasks total** — each a curated research challenge selected from high-quality human-authored publications, spanning the full spectrum from data analysis to novel scientific insight.
 
 ### 🏆 Leaderboard
 
@@ -340,7 +341,7 @@ SCORER_MODEL=gpt-5.1
 
 #### 4. Install Agents
 
-Install whichever agent(s) you plan to benchmark. You do not need all five.
+Install whichever agent(s) you plan to benchmark. You do not need all six.
 
 | Agent | Official installation guide | Notes |
 |:------|:----------------------------|:------|
@@ -349,6 +350,7 @@ Install whichever agent(s) you plan to benchmark. You do not need all five.
 | **OpenClaw** | [OpenClaw](https://openclaw.ai/) | Official website and setup entry |
 | **Nanobot** | [HKUDS/nanobot](https://github.com/HKUDS/nanobot) | Official GitHub repository |
 | **EvoScientist** | [EvoScientist/EvoScientist](https://github.com/EvoScientist/EvoScientist) | Official GitHub repository |
+| **ResearchHarness** | [black-yt/ResearchHarness benchmark README](https://github.com/black-yt/ResearchHarness/blob/main/benchmarks/ResearchClawBench/README.md) | Lightweight baseline harness for testing different LLMs; replace `/abs/path/to/ResearchHarness` in `agents.json` |
 
 #### 5. Launch
 
@@ -364,7 +366,7 @@ After a run completes, switch to the **Evaluation** tab and click **Score**. The
 
 ### 🤖 Supported Agents
 
-ResearchClawBench ships with built-in support for five frontier coding agents:
+ResearchClawBench ships with built-in support for five frontier coding agents plus a lightweight ResearchHarness baseline:
 
 | Agent | Command | Notes |
 |:------|:--------|:------|
@@ -373,6 +375,7 @@ ResearchClawBench ships with built-in support for five frontier coding agents:
 | <img src="evaluation/static/logos/openclaw.svg" width="16" /> **OpenClaw** | `openclaw agent ...` | Self-hosted gateway, 3600s timeout |
 | <img src="evaluation/static/logos/nanobot.svg" width="16" /> **Nanobot** | `nanobot agent -m ...` | Ultra-lightweight, reliable tool execution |
 | <img src="evaluation/static/logos/evo.svg" width="16" /> **EvoScientist** | `evosci --ui cli ...` | Self-evolving AI Scientists |
+| <img src="evaluation/static/logos/rh.svg" width="16" /> **ResearchHarness** | `python3 /abs/path/to/ResearchHarness/run_agent.py ...` | Lightweight baseline harness for testing different LLMs |
 
 #### 🔧 Add Your Own Agent
 
