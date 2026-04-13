@@ -65,8 +65,8 @@ Most AI benchmarks evaluate what models **know**. We evaluate what agents can **
 
 ### 📢 News
 
-- **2026-04-13** 🧭 Added built-in [**ARIS Codex**](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) UI support and documentation. Imported benchmark runs are supported in the leaderboard and run browser; one-click launch is not yet supported in the public preset.
-- **2026-04-10** 🔬 Added built-in [ResearchClaw](https://github.com/researchclaw/researchclaw) support — an intelligent agent-powered research assistant with built-in skills for paper search, literature review, and data analysis.
+- **2026-04-13** 🧭 Added built-in [ARIS Codex](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) UI support and documentation. Imported benchmark runs are supported in the leaderboard and run browser; one-click launch is not yet supported in the public preset.
+- **2026-04-10** 🔬 Added built-in [ResearchClaw](https://github.com/ymx10086/ResearchClaw) support — an intelligent agent-powered research assistant with built-in skills for paper search, literature review, and data analysis.
 - **2026-04-07** 🧪 Added built-in [ResearchHarness](https://github.com/black-yt/ResearchHarness) support as a lightweight baseline agent for testing different LLMs under the same ResearchClawBench workflow.
 - **2026-03-30** 🧬 Added built-in [EvoScientist](https://github.com/EvoScientist/EvoScientist) support and clarified multimodal judge prompting so the first attached image is explicitly treated as the ground-truth figure.
 - **2026-03-27** 🤗 Released a Hugging Face dataset mirror at [InternScience/ResearchClawBench](https://huggingface.co/datasets/InternScience/ResearchClawBench), including 10 additional tasks from ResearchClawBench-Self and a task downloader script.
@@ -353,7 +353,7 @@ Install whichever agent(s) you plan to benchmark. You do not need every built-in
 | **OpenClaw** | [OpenClaw](https://openclaw.ai/) | Official website and setup entry |
 | **Nanobot** | [HKUDS/nanobot](https://github.com/HKUDS/nanobot) | Official GitHub repository |
 | **EvoScientist** | [EvoScientist/EvoScientist](https://github.com/EvoScientist/EvoScientist) | Official GitHub repository |
-| **ResearchClaw** | [researchclaw/researchclaw](https://github.com/researchclaw/researchclaw) | `pip install researchclaw` |
+| **ResearchClaw** | [ymx10086/ResearchClaw](https://github.com/ymx10086/ResearchClaw) | `pip install researchclaw` |
 | **ResearchHarness** | [black-yt/ResearchHarness benchmark README](https://github.com/black-yt/ResearchHarness/blob/main/benchmarks/ResearchClawBench/README.md) | Lightweight baseline harness for testing different LLMs; replace `/abs/path/to/ResearchHarness` in `agents.json` |
 
 #### 5. Launch
