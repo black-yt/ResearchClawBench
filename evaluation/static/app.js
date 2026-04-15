@@ -178,8 +178,16 @@ async function loadDashboard() {
       if (!(t in data.frontier)) data.frontier[t] = null;
     }
     // Ensure all preset agents appear in preset order
+    const variantBases = new Set(
+      (data.agents || [])
+        .map(name => getAgentBaseLabel(name))
+        .filter(base => base)
+    );
     const orderedAgents = [];
     for (const name of presetAgents) {
+      const hasDirectScores = !!data.scores[name] && Object.keys(data.scores[name]).length > 0;
+      const hiddenByVariantOnly = variantBases.has(name) && (data.agents || []).some(agent => agent !== name && getAgentBaseLabel(agent) === name);
+      if (hiddenByVariantOnly && !hasDirectScores) continue;
       orderedAgents.push(name);
       if (!data.scores[name]) data.scores[name] = {};
     }
@@ -343,7 +351,7 @@ function renderFrontierChart(data) {
   const agentModelLabels = {};
   data.agents.forEach(agent => { agentModelLabels[agent] = getAgentModelLabel(data, agent); });
   legendEl.innerHTML = frontierChart.data.datasets.map((ds, i) => {
-    const logo = state.agentLogos[ds.label];
+    const logo = getAgentLogo(ds.label);
     const logoHtml = logo ? `<img src="${logo}" alt="">` : '';
     if (ds.label === 'Frontier') {
       return `<div class="chart-legend-item"><span class="chart-legend-swatch dashed" style="border-color:${ds.borderColor}"></span>${ds.label}</div>`;
@@ -1695,8 +1703,18 @@ function backToDashboard() {
 /* ── Util ────────────────────────────────────────────────────────────── */
 function esc(s) { if (!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
+function getAgentBaseLabel(name) {
+  if (!name) return '';
+  const m = String(name).match(/^(.*?) \([^()]+\)$/);
+  return m ? m[1] : String(name);
+}
+
+function getAgentLogo(name) {
+  return state.agentLogos[name] || state.agentLogos[getAgentBaseLabel(name)] || '';
+}
+
 function agentLogoHtml(name, size = 16) {
-  const logo = state.agentLogos[name];
+  const logo = getAgentLogo(name);
   if (logo) return `<img class="agent-logo" src="${logo}" alt="" style="width:${size}px;height:${size}px;vertical-align:middle;">`;
   return '';
 }
