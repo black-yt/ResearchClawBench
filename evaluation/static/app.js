@@ -368,7 +368,9 @@ function renderFrontierChart(data) {
 }
 
 function renderLeaderboard(data) {
-  const wrap = document.getElementById('leaderboard-wrap');
+  const container = document.getElementById('leaderboard-wrap');
+  const legacyShell = document.getElementById('leaderboard-scrollbar-shell');
+  if (legacyShell) legacyShell.style.display = 'none';
 
   // Live clock (static mode only)
   if (STATIC_MODE) {
@@ -415,61 +417,129 @@ function renderLeaderboard(data) {
       .filter(Boolean)
       .reduce((best, entry) => !best || entry.score > best.score ? entry : best, null);
   }
+  function renderSummaryCell(entry) {
+    if (!entry || !Number.isFinite(entry.score)) return '<td class="no-score leaderboard-static-cell">-</td>';
+    const scoreHtml = `<span class="score-cell" style="${cellStyle(entry.score)}">${entry.score.toFixed(1)}</span>`;
+    return `<td class="leaderboard-score-td leaderboard-static-cell"><div class="leaderboard-score-wrap">${scoreHtml}${renderMetricLines(entry)}</div></td>`;
+  }
+  function renderSection(key, title, tableHtml, hint, note = '') {
+    const noteHtml = note ? `<div class="leaderboard-section-note">${note}</div>` : '';
+    return `
+      <section class="leaderboard-section">
+        <div class="leaderboard-section-title">${title}</div>
+        ${noteHtml}
+        <div class="leaderboard-scrollbar-shell leaderboard-subscrollbar-shell" id="leaderboard-scrollbar-shell-${key}" style="display:none">
+          <div class="leaderboard-scrollbar-hint">${hint}</div>
+          <div class="leaderboard-scrollbar" id="leaderboard-scrollbar-${key}">
+            <div class="leaderboard-scrollbar-spacer" id="leaderboard-scrollbar-spacer-${key}"></div>
+          </div>
+        </div>
+        <div class="leaderboard-subwrap" id="leaderboard-wrap-${key}">${tableHtml}</div>
+      </section>`;
+  }
+  function summarizeByDomain() {
+    const domains = [...new Set(data.tasks.map(task => task.split('_')[0]).filter(Boolean))];
+    const tasksByDomain = Object.fromEntries(domains.map(domain => [domain, data.tasks.filter(task => task.startsWith(`${domain}_`))]));
+    const rows = data.agents.map(agent => {
+      const overall = averageEntry(data.tasks.map(task => data.scores[agent]?.[task]).filter(Boolean));
+      const domainsMap = Object.fromEntries(
+        domains.map(domain => [
+          domain,
+          averageEntry(tasksByDomain[domain].map(task => data.scores[agent]?.[task]).filter(Boolean)),
+        ]),
+      );
+      return { agent, overall, domains: domainsMap };
+    });
+    rows.sort((a, b) => {
+      const av = Number.isFinite(a.overall?.score) ? a.overall.score : -Infinity;
+      const bv = Number.isFinite(b.overall?.score) ? b.overall.score : -Infinity;
+      if (bv !== av) return bv - av;
+      return a.agent.localeCompare(b.agent);
+    });
+    return { domains, rows };
+  }
 
-  let html = '<table class="leaderboard"><thead><tr><th>Task</th>';
+  const domainSummary = summarizeByDomain();
+
+  let summaryHtml = '<table class="leaderboard leaderboard-summary"><thead><tr><th>Agent</th><th>Overall</th>';
+  domainSummary.domains.forEach(domain => {
+    summaryHtml += `<th>${esc(domain)}</th>`;
+  });
+  summaryHtml += '</tr></thead><tbody>';
+  domainSummary.rows.forEach((row, index) => {
+    const modelLabel = getAgentModelLabel(data, row.agent);
+    const modelHtml = modelLabel ? `<span class="leaderboard-agent-model">${esc(modelLabel)}</span>` : '';
+    const medal = Number.isFinite(row.overall?.score) && index < 3 ? ['🥇', '🥈', '🥉'][index] : '';
+    const medalHtml = medal ? `<span class="leaderboard-medal" aria-hidden="true">${medal}</span>` : '';
+    summaryHtml += `<tr><td><div class="leaderboard-agent-row"><span class="leaderboard-agent-name">${medalHtml}${agentLogoHtml(row.agent, 18)}<span>${esc(row.agent)}</span></span>${modelHtml}</div></td>`;
+    summaryHtml += renderSummaryCell(row.overall);
+    domainSummary.domains.forEach(domain => {
+      summaryHtml += renderSummaryCell(row.domains[domain]);
+    });
+    summaryHtml += '</tr>';
+  });
+  summaryHtml += '</tbody></table>';
+
+  let taskHtml = '<table class="leaderboard"><thead><tr><th>Task</th>';
   data.agents.forEach(a => {
     const modelLabel = getAgentModelLabel(data, a);
     const modelHtml = modelLabel ? `<span class="leaderboard-agent-model">${esc(modelLabel)}</span>` : '';
-    html += `<th><div class="leaderboard-agent-head">${agentLogoHtml(a, 20)}<span class="leaderboard-agent-name">${esc(a)}</span>${modelHtml}</div></th>`;
+    taskHtml += `<th><div class="leaderboard-agent-head">${agentLogoHtml(a, 20)}<span class="leaderboard-agent-name">${esc(a)}</span>${modelHtml}</div></th>`;
   });
-  html += '<th>Frontier</th></tr></thead><tbody>';
+  taskHtml += '<th>Frontier</th></tr></thead><tbody>';
 
   data.tasks.forEach(task => {
-    html += `<tr><td>${esc(task)}</td>`;
+    taskHtml += `<tr><td>${esc(task)}</td>`;
     data.agents.forEach(agent => {
       const entry = data.scores[agent]?.[task];
       if (entry) {
-        html += renderScoreBlock(entry, true);
+        taskHtml += renderScoreBlock(entry, true);
       } else {
-        html += '<td class="no-score">-</td>';
+        taskHtml += '<td class="no-score">-</td>';
       }
     });
     const frontier = frontierEntry(task);
     if (frontier) {
-      html += renderScoreBlock(frontier, false);
+      taskHtml += renderScoreBlock(frontier, false);
     } else {
-      html += '<td class="no-score">-</td>';
+      taskHtml += '<td class="no-score">-</td>';
     }
-    html += '</tr>';
+    taskHtml += '</tr>';
   });
 
   // Average row — only count tasks that have scores
-  html += '<tr class="frontier-row"><td>Average</td>';
+  taskHtml += '<tr class="frontier-row"><td>Average</td>';
   data.agents.forEach(agent => {
     const avgEntry = averageEntry(data.tasks.map(t => data.scores[agent]?.[t]).filter(Boolean));
     if (!avgEntry) {
-      html += '<td class="no-score">-</td>';
+      taskHtml += '<td class="no-score">-</td>';
       return;
     }
-    html += renderScoreBlock(avgEntry, false);
+    taskHtml += renderScoreBlock(avgEntry, false);
   });
   const frontierAvgEntry = averageEntry(data.tasks.map(frontierEntry).filter(Boolean));
   if (frontierAvgEntry) {
-    html += renderScoreBlock(frontierAvgEntry, false);
+    taskHtml += renderScoreBlock(frontierAvgEntry, false);
   } else {
-    html += '<td class="no-score">-</td>';
+    taskHtml += '<td class="no-score">-</td>';
   }
-  html += '</tr></tbody></table>';
+  taskHtml += '</tr></tbody></table>';
 
-  wrap.innerHTML = html;
-  syncLeaderboardScrollbar();
+  const html = `
+    <div class="leaderboard-stack">
+      ${renderSection('summary', 'By Domain', summaryHtml, 'Slide to view more domains')}
+      ${renderSection('task', 'By Task', taskHtml, 'Slide to view more agents', '<span class="leaderboard-note-icon" aria-hidden="true">👉</span> Click any scored cell to jump to run details')}
+    </div>`;
+
+  container.innerHTML = html;
+  syncLeaderboardScrollbars();
 }
 
-function syncLeaderboardScrollbar() {
-  const wrap = document.getElementById('leaderboard-wrap');
-  const shell = document.getElementById('leaderboard-scrollbar-shell');
-  const bar = document.getElementById('leaderboard-scrollbar');
-  const spacer = document.getElementById('leaderboard-scrollbar-spacer');
+function syncLeaderboardSectionScrollbar(key) {
+  const wrap = document.getElementById(`leaderboard-wrap-${key}`);
+  const shell = document.getElementById(`leaderboard-scrollbar-shell-${key}`);
+  const bar = document.getElementById(`leaderboard-scrollbar-${key}`);
+  const spacer = document.getElementById(`leaderboard-scrollbar-spacer-${key}`);
   const table = wrap?.querySelector('.leaderboard');
   if (!wrap || !shell || !bar || !spacer || !table) return;
 
@@ -497,12 +567,17 @@ function syncLeaderboardScrollbar() {
       syncing = false;
     });
     window.addEventListener('resize', () => {
-      window.requestAnimationFrame(syncLeaderboardScrollbar);
+      window.requestAnimationFrame(syncLeaderboardScrollbars);
     });
     bar._leaderboardBound = true;
   }
 
   bar.scrollLeft = Math.min(wrap.scrollLeft, bar.scrollWidth - bar.clientWidth);
+}
+
+function syncLeaderboardScrollbars() {
+  syncLeaderboardSectionScrollbar('summary');
+  syncLeaderboardSectionScrollbar('task');
 }
 
 async function goToRun(runId) {
