@@ -202,6 +202,47 @@ async function loadDashboard() {
   } catch (e) { console.error('Dashboard load failed:', e); }
 }
 
+function getAverageAgentScore(data, agent) {
+  const entries = Object.values(data?.scores?.[agent] || {}).filter(Boolean);
+  const scores = entries.map(e => e.score).filter(Number.isFinite);
+  return scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : -Infinity;
+}
+
+function compareAgentsByScore(data, a, b) {
+  const diff = getAverageAgentScore(data, b) - getAverageAgentScore(data, a);
+  if (diff) return diff;
+  return getAgentDisplayLabel(data, a).localeCompare(getAgentDisplayLabel(data, b));
+}
+
+function getAgentSeriesKey(data, agent) {
+  const display = getAgentDisplayLabel(data, agent).trim().toLowerCase();
+  const leadingFamily = display.match(/^[a-z]+/);
+  return leadingFamily ? leadingFamily[0] : display;
+}
+
+function orderAgentsByScoreAndSeries(data, agents) {
+  const groups = new Map();
+  agents.forEach(agent => {
+    const key = getAgentSeriesKey(data, agent);
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(agent);
+  });
+
+  return [...groups.values()]
+    .map(members => members.sort((a, b) => compareAgentsByScore(data, a, b)))
+    .sort((a, b) => compareAgentsByScore(data, a[0], b[0]))
+    .flat();
+}
+
+function getFrontierAgentOrder(data) {
+  const agents = data.agents.filter(agent => !isResearchHarnessAgent(agent));
+  const llms = data.agents.filter(isResearchHarnessAgent);
+  return [
+    ...orderAgentsByScoreAndSeries(data, agents),
+    ...orderAgentsByScoreAndSeries(data, llms),
+  ];
+}
+
 function renderFrontierChart(data) {
   const ctx = document.getElementById('frontier-chart');
   if (!ctx) return;
@@ -211,8 +252,9 @@ function renderFrontierChart(data) {
   const domainLabels = labels.map(t => t.replace(/_\d+$/, ''));
   const datasets = [];
 
-  // Each agent as a line
-  data.agents.forEach((agent, i) => {
+  // Each agent as a line. Keep full agents before standalone LLMs, with
+  // same-family entries grouped by the strongest member to avoid a noisy legend.
+  getFrontierAgentOrder(data).forEach((agent, i) => {
     const color = AGENT_COLORS[i % AGENT_COLORS.length];
     const scores = labels.map(t => data.scores[agent]?.[t]?.score ?? null);
     datasets.push({
@@ -428,26 +470,6 @@ function renderLeaderboard(data) {
       .filter(Boolean)
       .reduce((best, entry) => !best || entry.score > best.score ? entry : best, null);
   }
-  function averageScoreForAgent(agent) {
-    return averageEntry(data.tasks.map(task => data.scores[agent]?.[task]).filter(Boolean))?.score ?? -Infinity;
-  }
-  function splitAgentGroups(list) {
-    const agents = [];
-    const llms = [];
-    list.forEach(name => {
-      if (isResearchHarnessAgent(name)) {
-        llms.push(name);
-      } else {
-        agents.push(name);
-      }
-    });
-    llms.sort((a, b) => {
-      const diff = averageScoreForAgent(b) - averageScoreForAgent(a);
-      if (diff) return diff;
-      return getAgentDisplayLabel(data, a).localeCompare(getAgentDisplayLabel(data, b));
-    });
-    return { agents, llms };
-  }
   function renderSummaryCell(entry) {
     if (!entry || !Number.isFinite(entry.score)) return '<td class="no-score leaderboard-static-cell">-</td>';
     const scoreHtml = `<span class="score-cell" style="${cellStyle(entry.score)}">${entry.score.toFixed(1)}</span>`;
@@ -494,10 +516,12 @@ function renderLeaderboard(data) {
     };
   }
 
-  const groupedAgents = splitAgentGroups(data.agents);
-  const orderedTaskAgents = [...groupedAgents.agents, ...groupedAgents.llms];
-  const firstLlmAgent = groupedAgents.agents.length && groupedAgents.llms.length ? groupedAgents.llms[0] : '';
   const domainSummary = summarizeByDomain();
+  const orderedTaskAgents = [
+    ...domainSummary.agentRows.map(row => row.agent),
+    ...domainSummary.llmRows.map(row => row.agent),
+  ];
+  const firstLlmAgent = domainSummary.agentRows.length && domainSummary.llmRows.length ? domainSummary.llmRows[0].agent : '';
 
   let summaryHtml = '<table class="leaderboard leaderboard-summary"><thead><tr><th>Agent/LLM</th><th>Overall</th>';
   domainSummary.domains.forEach(domain => {
