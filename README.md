@@ -65,7 +65,7 @@ Most AI benchmarks evaluate what models **know**. We evaluate what agents can **
 
 ### 📢 News
 
-- **2026-04-30** 📊 Evaluated standalone LLMs with [ResearchHarness](https://github.com/black-yt/ResearchHarness): Claude-Opus-4.7, Claude-Opus-4.6, GLM-5.1, Qwen3.6-Plus, Qwen3.5-397B-A17B, GPT-5.5, GPT-5.4, MiMo-V2-Pro, Kimi-K2.5, Grok-4.1, and Gemini-3.1-Pro.
+- **2026-04-30** 📊 Evaluated standalone LLMs with [ResearchHarness](https://github.com/black-yt/ResearchHarness): Claude-Opus-4.7, Claude-Opus-4.6, GLM-5.1, Qwen3.6-Plus, Qwen3.5-397B-A17B, GPT-5.5, GPT-5.4, MiMo-V2-Pro, Kimi-K2.5, Grok-4.1, and Gemini-3.1-Pro. Results are available on the [Leaderboard](https://internscience.github.io/ResearchClawBench-Home/).
 - **2026-04-13** 🧭 Added built-in [ARIS Codex](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) UI support and documentation. Imported benchmark runs are supported in the leaderboard and run browser; one-click launch is not yet supported in the public preset.
 - **2026-04-10** 🔬 Added built-in [ResearchClaw](https://github.com/ymx10086/ResearchClaw) support — an intelligent agent-powered research assistant with built-in skills for paper search, literature review, and data analysis.
 - **2026-04-07** 🧪 Added built-in [ResearchHarness](https://github.com/black-yt/ResearchHarness) support as a lightweight baseline agent for testing different LLMs under the same ResearchClawBench workflow.
