@@ -1,0 +1,97 @@
+cff-version: 1.2.0
+message: "If you use ResearchClawBench, please cite it using the metadata from this file."
+title: "ResearchClawBench: Evaluating AI Agents for Automated Research from Re-Discovery to New-Discovery"
+type: software
+authors:
+  - given-names: Wanghan
+    family-names: Xu
+  - given-names: Shuo
+    family-names: Li
+  - given-names: Tianlin
+    family-names: Ye
+  - given-names: Qinglong
+    family-names: Cao
+  - given-names: Yixin
+    family-names: Chen
+  - given-names: Hengjian
+    family-names: Gao
+  - given-names: Ruizhe
+    family-names: Chen
+  - given-names: Zhiwang
+    family-names: Zhou
+  - given-names: Kun
+    family-names: Li
+  - given-names: Qi
+    family-names: Li
+  - given-names: Sheng
+    family-names: Xu
+  - given-names: Shengdu
+    family-names: Chai
+  - given-names: Fangchen
+    family-names: Yu
+  - given-names: Xiangyu
+    family-names: Zhao
+  - given-names: Zhangrui
+    family-names: Zhao
+  - given-names: Weijie
+    family-names: Ma
+  - given-names: Zijie
+    family-names: Guo
+  - given-names: Haoyu
+    family-names: Zhou
+  - given-names: Haoxiang
+    family-names: Yin
+  - given-names: Lixue
+    family-names: Cheng
+  - given-names: Chaofan
+    family-names: Hu
+  - given-names: Haoxuan
+    family-names: Li
+  - given-names: Lu
+    family-names: Mi
+  - given-names: Xuxuan
+    family-names: Xie
+  - given-names: Yifan
+    family-names: Zhou
+  - given-names: Xinyu
+    family-names: Gu
+  - given-names: Bin
+    family-names: Wang
+  - given-names: Zhenfei
+    family-names: Yin
+  - given-names: Jiamin
+    family-names: Wu
+  - given-names: Mianxin
+    family-names: Liu
+  - given-names: Chunfeng
+    family-names: Song
+  - given-names: Fenghua
+    family-names: Ling
+  - given-names: Bo
+    family-names: Zhang
+  - given-names: Dongzhan
+    family-names: Zhou
+  - given-names: Shixiang
+    family-names: Tang
+  - given-names: Yuqiang
+    family-names: Li
+  - given-names: Mao
+    family-names: Su
+  - given-names: Peng
+    family-names: Ye
+  - given-names: Siqi
+    family-names: Sun
+  - given-names: Guangtao
+    family-names: Zhai
+  - given-names: Tianfan
+    family-names: Fu
+  - given-names: Wanli
+    family-names: Ouyang
+  - given-names: Lei
+    family-names: Bai
+  - given-names: Wenlong
+    family-names: Zhang
+date-released: 2026-03-18
+license: MIT
+repository-code: "https://github.com/InternScience/ResearchClawBench"
+url: "https://internscience.github.io/ResearchClawBench-Home/"

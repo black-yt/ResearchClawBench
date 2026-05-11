@@ -443,11 +443,12 @@ We welcome contributions in several forms — see [CONTRIBUTING.md](CONTRIBUTING
 If you would like to cite our work, please use the following BibTeX.
 
 ```bib
-@article{xu2025probing,
-  title={Probing Scientific General Intelligence of LLMs with Scientist-Aligned Workflows},
-  author={Xu, Wanghan and Zhou, Yuhao and Zhou, Yifan and Cao, Qinglong and Li, Shuo and Bu, Jia and Liu, Bo and Chen, Yixin and He, Xuming and Zhao, Xiangyu and others},
-  journal={arXiv preprint arXiv:2512.16969},
-  year={2025}
+@misc{xu2026researchclawbench,
+  title={ResearchClawBench: Evaluating AI Agents for Automated Research from Re-Discovery to New-Discovery},
+  author={Wanghan Xu and Shuo Li and Tianlin Ye and Qinglong Cao and Yixin Chen and Hengjian Gao and Ruizhe Chen and Zhiwang Zhou and Kun Li and Qi Li and Sheng Xu and Shengdu Chai and Fangchen Yu and Xiangyu Zhao and Zhangrui Zhao and Weijie Ma and Zijie Guo and Haoyu Zhou and Haoxiang Yin and Lixue Cheng and Chaofan Hu and Haoxuan Li and Lu Mi and Xuxuan Xie and Yifan Zhou and Xinyu Gu and Bin Wang and Zhenfei Yin and Jiamin Wu and Mianxin Liu and Chunfeng Song and Fenghua Ling and Bo Zhang and Dongzhan Zhou and Shixiang Tang and Yuqiang Li and Mao Su and Peng Ye and Siqi Sun and Guangtao Zhai and Tianfan Fu and Wanli Ouyang and Lei Bai and Wenlong Zhang},
+  year={2026},
+  month={March},
+  url={https://github.com/InternScience/ResearchClawBench}
 }
 ```
 
