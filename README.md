@@ -443,12 +443,13 @@ We welcome contributions in several forms — see [CONTRIBUTING.md](CONTRIBUTING
 If you would like to cite our work, please use the following BibTeX.
 
 ```bib
-@misc{xu2026researchclawbench,
-  title={ResearchClawBench: Evaluating AI Agents for Automated Research from Re-Discovery to New-Discovery},
-  author={Wanghan Xu and Shuo Li and Tianlin Ye and Qinglong Cao and Yixin Chen and Hengjian Gao and Ruizhe Chen and Zhiwang Zhou and Kun Li and Qi Li and Sheng Xu and Shengdu Chai and Fangchen Yu and Xiangyu Zhao and Zhangrui Zhao and Weijie Ma and Zijie Guo and Haoyu Zhou and Haoxiang Yin and Lixue Cheng and Chaofan Hu and Haoxuan Li and Lu Mi and Xuxuan Xie and Yifan Zhou and Xinyu Gu and Bin Wang and Zhenfei Yin and Jiamin Wu and Mianxin Liu and Chunfeng Song and Fenghua Ling and Bo Zhang and Dongzhan Zhou and Shixiang Tang and Yuqiang Li and Mao Su and Peng Ye and Siqi Sun and Guangtao Zhai and Tianfan Fu and Wanli Ouyang and Lei Bai and Wenlong Zhang},
-  year={2026},
-  month={March},
-  url={https://github.com/InternScience/ResearchClawBench}
+@software{Xu_ResearchClawBench_Evaluating_AI_2026,
+author = {Xu, Wanghan and Li, Shuo and Ye, Tianlin and Cao, Qinglong and Chen, Yixin and Gao, Hengjian and Chen, Ruizhe and Zhou, Zhiwang and Li, Kun and Li, Qi and Xu, Sheng and Chai, Shengdu and Yu, Fangchen and Zhao, Xiangyu and Zhao, Zhangrui and Ma, Weijie and Guo, Zijie and Zhou, Haoyu and Yin, Haoxiang and Cheng, Lixue and Hu, Chaofan and Li, Haoxuan and Mi, Lu and Xie, Xuxuan and Zhou, Yifan and Gu, Xinyu and Wang, Bin and Yin, Zhenfei and Wu, Jiamin and Liu, Mianxin and Song, Chunfeng and Ling, Fenghua and Zhang, Bo and Zhou, Dongzhan and Tang, Shixiang and Li, Yuqiang and Su, Mao and Ye, Peng and Sun, Siqi and Zhai, Guangtao and Fu, Tianfan and Ouyang, Wanli and Bai, Lei and Zhang, Wenlong},
+license = {MIT},
+month = mar,
+title = {{ResearchClawBench: Evaluating AI Agents for Automated Research from Re-Discovery to New-Discovery}},
+url = {https://github.com/InternScience/ResearchClawBench},
+year = {2026}
 }
 ```
 
