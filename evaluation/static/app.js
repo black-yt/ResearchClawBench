@@ -1951,7 +1951,7 @@ function getAgentSecondaryLabel(data, agent) {
 }
 
 function researchHarnessFootnoteHtml() {
-  return 'Note: All standalone LLM results below are evaluated with <a href="https://github.com/black-yt/ResearchHarness" target="_blank" rel="noopener noreferrer">ResearchHarness</a>.';
+  return 'Note: All standalone LLM results below are evaluated with <a href="https://huggingface.co/spaces/InternScience/ResearchHarness" target="_blank" rel="noopener noreferrer">ResearchHarness</a>.';
 }
 
 let _durationTimer = null;

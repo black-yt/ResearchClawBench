@@ -65,10 +65,10 @@ Most AI benchmarks evaluate what models **know**. We evaluate what agents can **
 
 ### 📢 News
 
-- **2026-04-30** 📊 Evaluated standalone LLMs with [ResearchHarness](https://github.com/black-yt/ResearchHarness): Claude-Opus-4.7, Claude-Opus-4.6, GLM-5.1, Qwen3.6-Plus, Qwen3.5-397B-A17B, GPT-5.5, GPT-5.4, MiMo-V2-Pro, Kimi-K2.5, Grok-4.1, and Gemini-3.1-Pro. Results are available on the [Leaderboard](https://internscience.github.io/ResearchClawBench-Home/).
+- **2026-04-30** 📊 Evaluated standalone LLMs with [ResearchHarness](https://huggingface.co/spaces/InternScience/ResearchHarness): Claude-Opus-4.7, Claude-Opus-4.6, GLM-5.1, Qwen3.6-Plus, Qwen3.5-397B-A17B, GPT-5.5, GPT-5.4, MiMo-V2-Pro, Kimi-K2.5, Grok-4.1, and Gemini-3.1-Pro. Results are available on the [Leaderboard](https://internscience.github.io/ResearchClawBench-Home/).
 - **2026-04-13** 🧭 Added built-in [ARIS Codex](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) UI support and documentation. Imported benchmark runs are supported in the leaderboard and run browser; one-click launch is not yet supported in the public preset.
 - **2026-04-10** 🔬 Added built-in [ResearchClaw](https://github.com/ymx10086/ResearchClaw) support — an intelligent agent-powered research assistant with built-in skills for paper search, literature review, and data analysis.
-- **2026-04-07** 🧪 Added built-in [ResearchHarness](https://github.com/black-yt/ResearchHarness) support as a lightweight baseline agent for testing different LLMs under the same ResearchClawBench workflow.
+- **2026-04-07** 🧪 Added built-in [ResearchHarness](https://huggingface.co/spaces/InternScience/ResearchHarness) support as a lightweight baseline agent for testing different LLMs under the same ResearchClawBench workflow.
 - **2026-03-30** 🧬 Added built-in [EvoScientist](https://github.com/EvoScientist/EvoScientist) support and clarified multimodal judge prompting so the first attached image is explicitly treated as the ground-truth figure.
 - **2026-03-27** 🤗 Released a Hugging Face dataset mirror at [InternScience/ResearchClawBench](https://huggingface.co/datasets/InternScience/ResearchClawBench), including 10 additional tasks from ResearchClawBench-Self and a task downloader script.
 - **2026-03-27** 📨 Opened the [ResearchClawBench submission Space](https://huggingface.co/spaces/InternScience/ResearchClawBench-Task-Submit) for community task uploads. New tasks are validated there and reviewed through Hugging Face dataset PRs instead of being added to this GitHub repository.
@@ -355,7 +355,7 @@ Install whichever agent(s) you plan to benchmark. You do not need every built-in
 | **Nanobot** | [HKUDS/nanobot](https://github.com/HKUDS/nanobot) | Official GitHub repository |
 | **EvoScientist** | [EvoScientist/EvoScientist](https://github.com/EvoScientist/EvoScientist) | Official GitHub repository |
 | **ResearchClaw** | [ymx10086/ResearchClaw](https://github.com/ymx10086/ResearchClaw) | `pip install researchclaw` |
-| **ResearchHarness** | [black-yt/ResearchHarness benchmark README](https://github.com/black-yt/ResearchHarness/blob/main/benchmarks/ResearchClawBench/README.md) | Lightweight baseline harness for testing different LLMs; replace `/abs/path/to/ResearchHarness` in `agents.json` |
+| **ResearchHarness** | [InternScience/ResearchHarness Space](https://huggingface.co/spaces/InternScience/ResearchHarness) | Lightweight baseline harness for testing different LLMs; replace `/abs/path/to/ResearchHarness` in `agents.json` |
 
 #### 5. Launch
 
