@@ -1869,6 +1869,7 @@ function getModelLogo(model) {
     [/^Kimi\b/i, 'static/logos/kimi.png'],
     [/^MiMo\b/i, 'static/logos/mimo.png'],
     [/^Grok\b/i, 'static/logos/grok.png'],
+    [/^DeepSeek\b/i, 'static/logos/deepseek.png'],
   ];
   const match = mappings.find(([pattern]) => pattern.test(label));
   return match ? match[1] : '';
