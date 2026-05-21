@@ -15,13 +15,11 @@ authors:
     family-names: Chen
   - given-names: Hengjian
     family-names: Gao
-  - given-names: Ruizhe
-    family-names: Chen
-  - given-names: Zhiwang
-    family-names: Zhou
-  - given-names: Kun
-    family-names: Li
+  - given-names: Yiheng
+    family-names: Wang
   - given-names: Qi
+    family-names: Li
+  - given-names: Kun
     family-names: Li
   - given-names: Sheng
     family-names: Xu
@@ -53,12 +51,20 @@ authors:
     family-names: Xie
   - given-names: Yifan
     family-names: Zhou
+  - given-names: Ruizhe
+    family-names: Chen
+  - given-names: Zhiwang
+    family-names: Zhou
+  - given-names: Xingjian
+    family-names: Guo
+  - given-names: Yuhao
+    family-names: Zhou
+  - given-names: Xuming
+    family-names: He
+  - given-names: Shengyuan
+    family-names: Xu
   - given-names: Xinyu
     family-names: Gu
-  - given-names: Bin
-    family-names: Wang
-  - given-names: Zhenfei
-    family-names: Yin
   - given-names: Jiamin
     family-names: Wu
   - given-names: Mianxin
@@ -67,8 +73,6 @@ authors:
     family-names: Song
   - given-names: Fenghua
     family-names: Ling
-  - given-names: Bo
-    family-names: Zhang
   - given-names: Dongzhan
     family-names: Zhou
   - given-names: Shixiang
@@ -81,12 +85,20 @@ authors:
     family-names: Ye
   - given-names: Siqi
     family-names: Sun
-  - given-names: Guangtao
-    family-names: Zhai
   - given-names: Tianfan
     family-names: Fu
+  - given-names: Bin
+    family-names: Wang
+  - given-names: Xue
+    family-names: Yang
+  - given-names: Zhenfei
+    family-names: Yin
+  - given-names: Guangtao
+    family-names: Zhai
   - given-names: Wanli
     family-names: Ouyang
+  - given-names: Bo
+    family-names: Zhang
   - given-names: Lei
     family-names: Bai
   - given-names: Wenlong
