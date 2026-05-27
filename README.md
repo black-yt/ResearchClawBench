@@ -117,13 +117,15 @@ ResearchClawBench operates in two distinct stages:
 flowchart LR
     subgraph Stage1["Stage 1 &mdash; Auto Research"]
         A["Raw Data\n+ Instructions"] --> B["AI Agent\n(autonomous)"]
-        B --> C["Code\n+ Figures\n+ Report"]
+        B --> C["Code"]
+        C --> G["Figures\n+ Report"]
     end
 
     subgraph Stage2["Stage 2 &mdash; Evaluation"]
-        C --> D["LLM Judge"]
-        E["Target Paper\n+ Checklist"] --> D
-        D --> F["Per-Item Scores\n+ Reasoning"]
+        G --> D["LLM Judge"]
+        E["Target Paper"] --> H["Checklist"]
+        H --> D
+        D --> F["Reasoning\n+ Per-Item Scores"]
     end
 
     style Stage1 fill:#f0f4ff,stroke:#3b82f6,stroke-width:2px
@@ -159,20 +161,22 @@ flowchart TD
     subgraph Inputs
         I["INSTRUCTIONS.md\n(task background)"]
         R["Agent Report\n(text + figures)"]
-        CL["Checklist\n(from target paper)"]
+        TP["Target Paper"]
+        CL["Checklist"]
     end
 
+    TP --> CL
     I & R & CL --> J["Multimodal LLM Judge"]
 
     J --> DET{"Determine\nEvaluation Mode"}
 
-    DET -->|"Quantitative\nresults"| OBJ["Mode A: Objective\n(Metric Optimization)"]
-    DET -->|"Qualitative\nreasoning"| SUB["Mode B: Subjective\n(Mechanism Analysis)"]
+    DET -->|"Quantitative\nresults"| OBJ["Mode A: Target Optimization\n(Comparison through quantitative indicators)"]
+    DET -->|"Qualitative\nreasoning"| SUB["Mode B: Diagnostic Analysis\n(Comparison through logical evidence)"]
 
     OBJ --> SO["Score by metric\naccuracy vs paper"]
     SUB --> SS["Score by evidence\nstrength vs paper"]
 
-    SO & SS --> T["Per-Item Scores\n+ Reasoning\n→ Weighted Total"]
+    SO & SS --> T["Reasoning\n+ Per-Item Scores\n→ Weighted Total"]
 
     style Inputs fill:#f0f4ff,stroke:#3b82f6,stroke-width:2px
     style J fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
@@ -189,7 +193,7 @@ Each checklist item includes:
 
 The judge automatically determines which evaluation mode applies to each item, then scores it with the corresponding rubric (see below).
 
-##### Mode A: Objective Evaluation (Metric Optimization)
+##### Mode A: Target Optimization (Comparison through quantitative indicators)
 
 For checklist items involving specific numerical results, metrics, or quantitative outcomes:
 
@@ -207,7 +211,7 @@ For checklist items involving specific numerical results, metrics, or quantitati
 | **81–90** | Metrics dramatically surpass the paper |
 | **91–100** | Breakthrough results far exceeding the paper |
 
-##### Mode B: Subjective Evaluation (Mechanism Analysis)
+##### Mode B: Diagnostic Analysis (Comparison through logical evidence)
 
 For checklist items involving theoretical explanations, mechanistic insights, or interpretive analysis:
 
