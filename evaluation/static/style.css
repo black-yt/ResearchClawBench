@@ -770,8 +770,10 @@ body { height: 100vh; font-family: var(--font); font-size: 17px; line-height: 1.
 }
 #footer-links a:hover { color: var(--text-sidebar); }
 #footer-links svg { width: 19px; height: 19px; fill: currentColor; }
+#footer-links a[title="GitHub"] svg,
 #footer-links a[title="Hugging Face Dataset"] svg,
 #footer-links a[title="arXiv"] svg { display: none; }
+#footer-links a[title="GitHub"]::before,
 #footer-links a[title="Hugging Face Dataset"]::before,
 #footer-links a[title="arXiv"]::before {
     content: "";
@@ -781,8 +783,18 @@ body { height: 100vh; font-family: var(--font); font-size: 17px; line-height: 1.
     background-repeat: no-repeat;
     background-size: contain;
 }
+#footer-links a[title="GitHub"]::before {
+    background-color: currentColor;
+    -webkit-mask: url("logos/github.svg") center / contain no-repeat;
+    mask: url("logos/github.svg") center / contain no-repeat;
+}
 #footer-links a[title="Hugging Face Dataset"]::before { background-image: url("logos/huggingface.svg"); }
-#footer-links a[title="arXiv"]::before { background-image: url("logos/arxiv.svg"); }
+#footer-links a[title="arXiv"]::before {
+    border-radius: 50%;
+    background-color: rgba(128, 128, 128, 0.34);
+    background-image: url("logos/arxiv.svg");
+    background-size: 11px 15px;
+}
 
 /* --- Scrollbar ------------------------------------------------------- */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
