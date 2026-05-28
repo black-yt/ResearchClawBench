@@ -312,6 +312,14 @@ body { height: 100vh; font-family: var(--font); font-size: 17px; line-height: 1.
 .leaderboard-summary td { cursor: default; }
 .leaderboard-summary td:hover { background: transparent; }
 .leaderboard-static-cell { cursor: default; }
+
+.run-details-notice-overlay { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 24px; background: rgba(15, 23, 42, 0.38); backdrop-filter: blur(10px); }
+.run-details-notice-card { position: relative; width: min(520px, 100%); padding: 28px; border-radius: 28px; background: linear-gradient(135deg, rgba(var(--tile-rgb), 0.08), rgba(var(--glow-rgb), 0.14)), var(--bg-card); border: 1px solid var(--border); box-shadow: 0 24px 80px rgba(15, 23, 42, 0.22); color: var(--text); }
+.run-details-notice-card h3 { margin: 6px 0 12px; font-size: 24px; letter-spacing: -0.03em; }
+.run-details-notice-card p { margin: 10px 0; color: var(--text-secondary); line-height: 1.55; }
+.run-details-notice-kicker { display: inline-flex; padding: 5px 10px; border-radius: 999px; background: rgba(var(--glow-rgb), 0.12); color: var(--accent); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.run-details-notice-close { position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; border: 1px solid var(--border); border-radius: 50%; background: var(--bg-inset); color: var(--text-secondary); cursor: pointer; font-size: 20px; line-height: 1; }
+.run-details-notice-action { margin-top: 14px; padding: 10px 16px; border: 0; border-radius: 999px; background: var(--accent); color: var(--accent-text); font-weight: 700; cursor: pointer; }
 /* welcome fallback (no data) */
 .welcome-card { max-width: 480px; margin: 100px auto; text-align: center; }
 .welcome-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.25; }

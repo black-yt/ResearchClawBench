@@ -453,7 +453,11 @@ function renderLeaderboard(data) {
     const scoreHtml = `<span class="score-cell" style="${cellStyle(entry.score)}">${entry.score.toFixed(1)}</span>`;
     const inner = `<div class="leaderboard-score-wrap">${scoreHtml}${renderMetricLines(entry)}</div>`;
     const tdClass = `leaderboard-score-td${extraClass ? ` ${extraClass}` : ''}`;
-    return clickable ? `<td class="${tdClass}" onclick="goToRun('${entry.run_id}')">${inner}</td>` : `<td class="${tdClass}">${inner}</td>`;
+    if (!clickable) return `<td class="${tdClass}">${inner}</td>`;
+    const handler = entry.details_exported === false
+      ? `showRunDetailsUnavailableNotice()`
+      : `goToRun('${entry.run_id}')`;
+    return `<td class="${tdClass}" onclick="${handler}">${inner}</td>`;
   }
   function averageEntry(entries) {
     const scored = entries.filter(e => Number.isFinite(e?.score));
@@ -600,7 +604,7 @@ function renderLeaderboard(data) {
   const html = `
     <div class="leaderboard-stack">
       ${renderSection('summary', 'By Domain', summaryHtml, 'Slide to view more domains')}
-      ${renderSection('task', 'By Task', taskHtml, 'Slide to view more agents', '<span class="leaderboard-note-icon" aria-hidden="true">👉</span> Click any scored cell to jump to run details')}
+      ${renderSection('task', 'By Task', taskHtml, 'Slide to view more agents', '<span class="leaderboard-note-icon" aria-hidden="true">👉</span> Click scored cells to open run details when available')}
     </div>
     <div class="dashboard-footnote leaderboard-footnote">${researchHarnessFootnoteHtml()}</div>`;
 
@@ -654,6 +658,14 @@ function syncLeaderboardScrollbars() {
 }
 
 async function goToRun(runId) {
+  if (STATIC_MODE) {
+    if (!state._runsIndex) state._runsIndex = await fetchStaticJSON('data/runs_index.json') || [];
+    const indexedRun = state._runsIndex.find(r => r.run_id === runId);
+    if (indexedRun?.details_exported === false) {
+      showRunDetailsUnavailableNotice();
+      return;
+    }
+  }
   // Extract task_id from run_id (format: TaskId_timestamp)
   const parts = runId.split('_');
   const taskId = parts.slice(0, -2).join('_'); // e.g. "Energy_000" from "Energy_000_20260318_..."
@@ -799,10 +811,11 @@ async function selectTask(taskId) {
     : await (await fetch(`${API}/api/runs?task_id=${taskId}`)).json();
   if (stale()) return;
   const pendingRunId = state._pendingRunId;
-  const preferredRun = pendingRunId ? runs.find(r => r.run_id === pendingRunId) : null;
-  if (runs.length > 0) {
+  const selectableRuns = STATIC_MODE ? runs.filter(r => r.details_exported !== false) : runs;
+  const preferredRun = pendingRunId ? selectableRuns.find(r => r.run_id === pendingRunId) : null;
+  if (selectableRuns.length > 0) {
     state._pendingRunId = null;
-    await selectRun((preferredRun || runs[0]).run_id);
+    await selectRun((preferredRun || selectableRuns[0]).run_id);
   } else {
     state._pendingRunId = null;
     state.currentRunId = null;
@@ -873,6 +886,15 @@ async function deleteRun(runId) {
 }
 
 async function selectRun(runId) {
+  if (STATIC_MODE) {
+    if (!state._runsIndex) state._runsIndex = await fetchStaticJSON('data/runs_index.json') || [];
+    const indexedRun = state._runsIndex.find(r => r.run_id === runId);
+    if (indexedRun?.details_exported === false) {
+      showRunDetailsUnavailableNotice();
+      return;
+    }
+  }
+
   // Stop any ongoing streaming/tracking from previous run
   if (state.eventSource) { state.eventSource.close(); state.eventSource = null; }
   stopAutoTrack();
@@ -1887,6 +1909,27 @@ function agentLogoHtml(name, size = 16) {
   const logo = getAgentLogo(name);
   if (logo) return `<img class="agent-logo" src="${logo}" alt="" style="width:${size}px;height:${size}px;vertical-align:middle;">`;
   return '';
+}
+
+function showRunDetailsUnavailableNotice() {
+  const existing = document.querySelector('.run-details-notice-overlay');
+  if (existing) existing.remove();
+  const overlay = document.createElement('div');
+  overlay.className = 'run-details-notice-overlay';
+  overlay.innerHTML = `
+    <div class="run-details-notice-card" role="dialog" aria-modal="true" aria-label="Run details unavailable">
+      <button class="run-details-notice-close" type="button" aria-label="Close">&times;</button>
+      <div class="run-details-notice-kicker">Summary-only result</div>
+      <h3>Full run details are not exported</h3>
+      <p>Full run details for evaluations after May 22, 2026 are not exported due to space limits. All results were produced under the same evaluation setting.</p>
+      <p>You can continue browsing other available runs with full details.</p>
+      <button class="run-details-notice-action" type="button">Continue browsing</button>
+    </div>`;
+  const close = () => overlay.remove();
+  overlay.addEventListener('click', event => { if (event.target === overlay) close(); });
+  overlay.querySelector('.run-details-notice-close').onclick = close;
+  overlay.querySelector('.run-details-notice-action').onclick = close;
+  document.body.appendChild(overlay);
 }
 
 async function fetchStaticJSON(path) {
