@@ -770,6 +770,32 @@ body { height: 100vh; font-family: var(--font); font-size: 17px; line-height: 1.
 }
 #footer-links a:hover { color: var(--text-sidebar); }
 #footer-links svg { width: 19px; height: 19px; fill: currentColor; }
+#footer-links a[title="Hugging Face Dataset"] { position: relative; }
+#footer-links a[title="Hugging Face Dataset"] svg { display: none; }
+#footer-links a[title="Hugging Face Dataset"]::before {
+    content: "";
+    width: 19px; height: 19px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 35% 42%, var(--bg-sidebar) 0 1.4px, transparent 1.5px),
+        radial-gradient(circle at 65% 42%, var(--bg-sidebar) 0 1.4px, transparent 1.5px),
+        currentColor;
+}
+#footer-links a[title="Hugging Face Dataset"]::after {
+    content: "";
+    position: absolute;
+    width: 7px; height: 4px;
+    left: 50%; top: 14px;
+    transform: translate(-50%, -50%);
+    border-bottom: 1.5px solid var(--bg-sidebar);
+    border-radius: 0 0 8px 8px;
+}
+#footer-links a[title="arXiv"] svg {
+    padding: 2.5px;
+    border-radius: 50%;
+    background: rgba(128, 128, 128, 0.24);
+    box-sizing: border-box;
+}
 
 /* --- Scrollbar ------------------------------------------------------- */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
